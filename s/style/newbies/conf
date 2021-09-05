@@ -1,0 +1,20 @@
+// newbiesplayground.net
+
+name      newbies
+author    Strategy
+
+// backgrounds
+bodybg      #222 body.gif
+boxbg1      #333
+boxbg2      #111
+boxbg3      #222
+shadow      #2d851f
+
+// text
+textcol1    #ccc
+textcol2    #2d851f
+textcol3    #3abe25
+textcol4    #666
+
+// logos
+bglogo    newbs2.png

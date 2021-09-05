@@ -1,0 +1,20 @@
+// template
+
+name      halloween
+author    Darkelarious
+
+// backgrounds
+bodybg      #000 hw1.png
+boxbg1      g75.png
+boxbg2      g50.png
+boxbg3      prim.png
+shadow      #552500
+
+// text
+textcol1    #ccc
+textcol2    #fa0
+textcol3    #ff0
+textcol4    #552500
+
+// logos
+bglogo    333hw1.png

@@ -98,7 +98,7 @@ sub gamelist
         }) : (),
         header   => [
             ['Release Title', 'label' ],
-            ['Game', ''],
+            ['Game', 'gamename'],
             ['Servers', 'num_total'    ],
         ],
         row     => sub 

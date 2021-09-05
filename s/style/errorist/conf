@@ -1,0 +1,20 @@
+// template
+
+name      errorist
+author    Syntax-Error
+
+// backgrounds
+bodybg      #222 body.gif
+boxbg1      #333
+boxbg2      #111
+boxbg3      #1c1c1c
+shadow      #111
+
+// text
+textcol1    #ccc
+textcol2    #88f
+textcol3    #f88
+textcol4    #666
+
+// logos
+bglogo    errorist.png

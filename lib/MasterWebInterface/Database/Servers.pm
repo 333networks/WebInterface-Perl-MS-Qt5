@@ -22,7 +22,7 @@ sub dbServerListGet {
     $o{search}            ? ('LOWER(hostname) LIKE LOWER(?)' => "%$o{search}%")     : (),
     $o{gametype}          ? ('LOWER(gametype) LIKE LOWER(?)' => $o{gametype})       : (),
     $o{updated}           ? ('dt_updated > ?'                => (time-$o{updated})) : (),
-    ('hostport >= ?' => 0), # sanity check
+    ('hostport > ?' => 0), # sanity check (unresponsive servers or faulty queries tools)
   );
   
   my @select = ( qw| id ip hostport hostname serverlist.gamename country numplayers maxplayers maptitle mapname gametype dt_added label dt_updated| );

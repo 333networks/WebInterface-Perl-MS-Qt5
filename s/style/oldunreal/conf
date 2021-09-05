@@ -1,0 +1,20 @@
+// Old Unreal
+
+name      OldUnreal
+author    Smirftsch
+
+// backgrounds
+bodybg      #000
+boxbg1      #333
+boxbg2      #111
+boxbg3      #1c1c1c
+shadow      #222
+
+// text
+textcol1    #eee
+textcol2    #0f0
+textcol3    #090
+textcol4    #777
+
+// logos
+bglogo      oldunreal.png

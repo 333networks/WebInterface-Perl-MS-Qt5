@@ -1,0 +1,20 @@
+// template
+
+name      gonespy
+author    CougarXR7
+
+// backgrounds
+bodybg      #000
+boxbg1      #333
+boxbg2      #222
+boxbg3      #1c1c1c
+shadow      #222
+
+// text
+textcol1    #eee
+textcol2    #0e0
+textcol3    #0ee
+textcol4    #777
+
+// logos
+bglogo      gonespytm.png

@@ -57,14 +57,12 @@ sub handle500
                 br;
                 txt 'and will be fixed shortly. Please try again later.';
             end;
-        end;
         
-        if ($self->debug) 
-        {
-            div class => "code warning";
-                txt $error;
-            end;
-        }
+            if ($self->debug) 
+            {
+                p $error;
+            }
+        end;
     end;
     $self->htmlFooter;
 }

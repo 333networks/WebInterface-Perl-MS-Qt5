@@ -16,7 +16,7 @@ TUWF::register(
 # values as possible.
 # Display error pages if not found or incorrect.
 ################################################################################
-sub show_server 
+sub show_server
 {
     my ($self, $gamename, $s_addr) = @_;
     
@@ -96,10 +96,35 @@ sub show_server
     
     # serverinfo box
     div class => "mainbox detail";
-    
         div class => "header";
+            # server data flags in header (not country flags)
+            div class => "serverflags";
+                
+                # uplink or manually added/through applet
+                if ( $info->{f_direct} ) 
+                { div class => "direct", title => "This server uplinks directly to $self->{site_name}.", ""; }
+                else
+                { div class => "manual", title => "This server was added through master synchronisation and does not uplink to $self->{site_name}.", ""; }
+                
+                # authenticated through secure/validate
+                if ( $info->{f_auth} )
+                { div class => "authed",   title => "This server authenticated through the secure/validate challenge.", ""; }
+                else
+                { div class => "noauthed", title => "This server failed the secure/validate challenge or did not reply.", ""; }
+                
+                # server blacklisted?
+                if ( $info->{f_blacklist} )
+                { div class => "blacklist",   title => "This server is blacklisted for violating the $self->{site_name} Terms of Use or by request from the administrator.", ""; }
+                else
+                { div class => "noblacklist", title => "This server is not blacklisted by $self->{site_name}.", ""; }
+                
+                if ( $info->{passworded} and $info->{passworded} =~ /(true|1)/i )
+                { div class => "passwd",   title => "This server requires a password to join.", ""; }
+                else
+                { div class => "nopasswd", title => "This server is accessible for everybody.", "";}
+            end;    
             h1 title  => $info->{hostname} // "[unnamed $gamename server]",
-                         $info->{hostname} // "[unnamed $gamename server]"; 
+                         $info->{hostname} // "[unnamed $gamename server]";   
         end;
         
         #
@@ -143,36 +168,31 @@ sub show_server
                 span $maptitle;
             end;
             
-            table class => "mapinfo";
-                # numplayer field
-                Tr;
-                    td class => "wc1", "Players:";
-                    td;
-                        txt $info->{numplayers} // 0;
-                        txt "/";
-                        txt $info->{maxplayers} // 0;
-                    end;
-                end;
-                
-                
-                Tr;
-                    td "Bots:";
-                    td;
-                    if ($info->{botskill} or $info->{minplayers}) 
+            # added / last seen
+            div class => "updatenote";
+                span title => ("Server was added on ". strftime "%e %b %Y", gmtime ($info->{dt_added} // 0) );
+                    
+                    txt "information updated ";
+                    my @t = gmtime( time - ( $info->{dt_updated} // 0 ) );
+
+                    my $diff;
+                    $diff .= ($t[5]-70)*365 + $t[7] > 0 ? ( ($t[5]-70)*365 + $t[7])."d" : "" ; # years+days
+                    $diff .= ($t[2] ? $t[2]."h" : ""); # hours
+                    $diff .= ($t[1] ? $t[1]."m" : ""); # minutes
+                    $diff .= ($t[0] ? sprintf "%02ds", $t[0] : ""); # seconds
+                    
+                    
+                    if ( length $diff )
                     {
-                        txt $info->{minplayers} // 0;
-                        txt " ";
-                        txt $info->{botskill} // "";
-                        txt " bot"; 
-                        txt ($info->{minplayers} && $info->{minplayers} == 1 ? "" : "s");
+                        span class => ( ($t[5]-70 or $t[7]) ? "r" : ($t[2] ? "o" : "g") ), $diff;
+                        txt " ago.";
                     }
                     else
                     {
-                        txt "No";
+                        span class => "g", "right now.";
                     }
-                    end;
-                end;
-            end; #table
+                end; #span
+            end; # updatenote
         end; # container
         
         #
@@ -205,19 +225,7 @@ sub show_server
             # always display contact
             Tr;
                 td class => "wc1", "Contact:";
-                td;
-                    if ($info->{adminemail}) 
-                    {
-                        txt $info->{adminemail}
-                    }
-                    else 
-                    {
-                        i; 
-                            txt "This server has no contact information listed "; 
-                            a href => "https://ut99.org/viewtopic.php?f=33&t=6660", "[?]"; 
-                        end;
-                    }
-                end;
+                td ($info->{adminemail} ? $info->{adminemail} : "-") ;
             end;
             
             # location data
@@ -230,86 +238,36 @@ sub show_server
                     txt " ". $country;
                 end;
             end;
-            
-            # added / updated
-            Tr; 
-            {
-                td "Added:";
-                my @t = gmtime( time - ( $info->{dt_added} // 0 ) );
-                my $sig = 0;
-                my $diff = "";
-                if ($t[5]-70)
-                {
-                    $diff .= $t[5]-70 
-                          .  " year"
-                          . ( ($t[5]-70==1) ? "" : "s" ); 
-                    $sig++;
-                }
-                if ($t[7])
-                {
-                    $diff .= ($sig?", ":"")
-                          . $t[7]
-                          . " day"
-                          . ( ($t[7]==1) ? "" : "s") 
-                }
-                
-                if ($diff eq "") 
-                {
-                    $diff = "Less than one day";
-                }
-                td $diff . " ago (" . (strftime "%e %b %Y", gmtime ($info->{dt_added} // 0) ) .")";
-            }
-            end;
-            
+
+            # numplayer field
             Tr;
-            {
-                td "Last seen:";
+                td class => "wc1", "Players:";
                 td;
-                    my @t = gmtime( time - ( $info->{dt_updated} // 0 ) );
-                    if ($t[5]-70 // $t[7]) 
-                    {
-                        # more than 1 day? show date
-                        span class => "r", (strftime "%e %b %Y", gmtime ($info->{dt_updated} // 0) );
-                    }
-                    else 
-                    {
-                        # less than 1 day? show "time ago"
-                        my $diff = "";
-                        $diff .= ($t[2] ? $t[2]." hour"  . ( $t[2]>1 ? "s, " : ", ") : "");
-                        $diff .= ($t[1] ? $t[1]." minute". ( $t[1]>1 ? "s, " : ", ") : "");
-                        $diff .= ($t[0] ? $t[0]." second". ( $t[0]>1 ? "s"   : " " ) : "0 seconds");
-                        $diff .= " ago";
-                        span $diff;
-                    }
-                end;
-            }
-            end;
-            
-            
-            # TODO: move flags to header
-            Tr;
-                td "Flags: ";
-                td;
-                    # uplink/sync
-                    span title => "direct uplink or manually added?", 
-                        ($info->{f_direct} ? "💻 uplink" : "🤚 manual"); 
-                        
-                    txt ", ";
-                    
-                    span title => "authenticated game server?",
-                        ($info->{f_auth} ? "✅ authed" : "❌ insecure");
-                    txt ", ";
-                    
-                    span title => "server blacklisted for violating 333networks policy?",
-                        ($info->{f_blacklist} ? "blacklisted" : "compliant");
-                    
-                    txt ", ";
-                    span title => "does the server require a password to join?",
-                        ($info->{passworded} ? 
-                            ($info->{passworded} =~ /(true|1)/i ? "🔒 password" : "🔓 open")
-                            : "🔓 open");
+                    txt $info->{numplayers} // 0;
+                    txt "/";
+                    txt $info->{maxplayers} // 0;
                 end;
             end;
+            
+            
+            Tr;
+                td "Bots:";
+                td;
+                if ($info->{botskill} or $info->{minplayers}) 
+                {
+                    txt $info->{minplayers} // 0;
+                    txt " ";
+                    txt $info->{botskill} // "";
+                    txt " bot"; 
+                    txt ($info->{minplayers} && $info->{minplayers} == 1 ? "" : "s");
+                }
+                else
+                {
+                    txt "No";
+                }
+                end;
+            end;
+            
         end; # table serverinfo
         
         #
@@ -420,7 +378,10 @@ sub show_server
                 end;
             }
         end; # playerinfo
-    
+        
+        # disable stats that are considered irrelevant. can be re-enabled with "if (1)"
+        if (0)
+        {
         #
         # Team info
         table class => "teaminfo";
@@ -468,81 +429,19 @@ sub show_server
                 td ($info->{fraglimit} // 0);
             end;
         end;
+        }
         
         #
-        # Share options (copy fields)
-        my $url = $self->{site_url}
-                . "/"
-                . $gamename
-                . "/"
-                . ( $self->to_ipv4_str($info->{ip}) // "0.0.0.0" )
-                . ":"
-                . ($info->{hostport} // 0);
-        
+        # JSON URL (code inactive)
         table class => "shareopts";
             Tr; 
-                th class => "wc1", "Share";
-                th ""; 
-            end;
-            Tr;
-                td class => "tc1", "Link";
-                td class => "tc2";
-                    input type  => 'text', 
-                          class => 'text', 
-                          name => 'url', 
-                          value => $url;
+                th;
+                    a href => "http://333networks.com/json", title => "For more info, click to go to 333networks.com/json", "Json API";
                 end;
             end;
-            Tr;
-                td class => "tc1";
-                    a href => "/json", 
-                      title => "The url to access this server over the 333networks Json API", 
-                      "Json API";
-                end;
-                td class => "tc2";
-                    input type  => 'text', 
-                          class => 'text', 
-                          name  => 'url', 
-                          value => $self->{site_url}
-                                .  "/json/"
-                                . $gamename
-                                . "/"
-                                . ( $self->to_ipv4_str($info->{ip}) // "0.0.0.0" )
-                                . ":"
-                                . ($info->{hostport} // 0);
-                end;
-            end;
-            Tr;
-                td "Forum Link";
-                td;
-                    textarea type  => 'textarea', 
-                             class => 'text', 
-                             rows => 3, 
-                             name => 'paste';
-                        txt "\[url=$url\]";lit "\n";
-                        txt $info->{hostname} // "[unnamed $gamename server]";
-                        lit "\n";
-                        txt "\[/url\]";
-                    end;
-                end;
-            end;
-            Tr;
-                td "HTML Code";
-                td;
-                    textarea type  => 'textarea', 
-                             class => 'text', 
-                             rows  => 3, 
-                             name  => 'paste';
-                        txt "<a href=\"$url\">";
-                        lit "\n";
-                        txt $info->{hostname} // "[unnamed $gamename server]";
-                        lit "\n";
-                        txt "</a>";
-                    end;
-                end;
-            end;
-        end; # share options
-        
+            td ($self->{site_url} . "/json/" . $gamename . "/" . ( $self->to_ipv4_str($info->{ip}) // "0.0.0.0" ) . ":" . ($info->{hostport} // 0));
+        end;
+      
     end; # mainbox details
     $self->htmlFooter;
 }

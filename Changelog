@@ -1,5 +1,12 @@
 Changelog:
 
+05-09-2021: functional masterinterface with styles
+* remove json api documentation (now at 333networks.com/json)
+* refine the information fields in server info
+* add style generation code to utilities
+* 333networks style as default style
+* update readme with style generation instructions
+
 23-05-2021: first version of masterinterface
 * initial working version of webinterface compatible with MasterServer-Qt5
 * descriptive readme with user instructions

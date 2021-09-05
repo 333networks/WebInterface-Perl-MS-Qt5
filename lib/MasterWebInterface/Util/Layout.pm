@@ -18,7 +18,7 @@ sub htmlHeader
     if (my $overrideStyle = $self->reqParam("style") ) 
     {
         # default to custom style if specified option doesn't exist
-        $style = ( -e "$self->{root}/s/style/$overrideStyle" ) ? $overrideStyle : "basic";
+        $style = ( -e "$self->{root}/s/style/$overrideStyle" ) ? $overrideStyle : $self->{style};
     }
     
     html lang => "en";
@@ -61,19 +61,14 @@ sub htmlHeader
                 end;
                 
                 my $overrideStyle = $self->reqParam("style");
-                if ($overrideStyle) {
+                if ($overrideStyle or $self->{style_box}) {
                 # debug feature: force list of styles on floaty-box
                 div class => "mainbox",
                     style => "position:absolute; left: 20px; top: 20px; width:200px";
                     
                     div class => "header";
                     h1 "Development";
-                        p class => "alttitle";
-                            txt "This site is under development. Find ";
-                            a href => "http://333networks.com", "333networks.com here!";
-                            br;
-                            txt "Use the list below to test different house styles.";
-                        end;
+                        p "This box allows for testing of multiple styles. Disable it from config.";
                     end;
                 
                     ul style => "margin: 3px 20px 10pt 40px";

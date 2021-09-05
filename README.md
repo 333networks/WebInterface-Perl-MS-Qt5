@@ -1,4 +1,4 @@
-## Web Interface for MasterServer-Qt5
+# Web Interface for MasterServer-Qt5
 Web interface in Perl for MasterServer-Qt5.
 
 ## DESCRIPTION
@@ -15,7 +15,8 @@ This repository contains software for a web interface to display information obt
 * The following CPAN modules:
     * DBI
     * DBD::SQLite
-    * TUWF (http://dev.yorhel.nl/tuwf)
+    * TUWF
+    * Image::Size (optional for style generation)
 
 ## INSTALL
 This repository consists of Perl modules and is run by a http deamon. First, the MasterServer-Qt5 repository should be installed and configured in order to run this web interface. This web interface requires access to the database generated and updated by MasterServer-Qt5.
@@ -32,13 +33,13 @@ The 333networks masterserver interface comes with options. These options are fou
 Configure the path to the database that the masterserver uses. The location of this database is found in the documentation of `MasterServer-Qt5`.
 ```
   # database connection
-  db_login  => ["dbi:SQLite:dbname=/server/masterserver/qt5/data/masterserver.db",'',''],
+  db_login => ["dbi:SQLite:dbname=/path/to/your/data/masterserver.db",'',''],
 ```
 
 When more than one website style exists, it can be selected in the following option. If no additional style files are (manually) installed, do not alter this option.
 ```
   # display
-  style     => "classic2",
+  style => "333networks",
 ```
 
 By default, only servers that have updated in the last half hour are shown. To show servers for a shorter or longer period of time after the last update increase or decrease the value of the option `window_time`. This value is provided in seconds (3600 seconds is 1 hour).
@@ -47,13 +48,37 @@ By default, only servers that have updated in the last half hour are shown. To s
   window_time => 1800,
 ```
 
-## Apache settings
+## Style generation
+It is possible to generate a website with your preferred colours, background textures and personal logo. To build a new style, create a folder and conf file at `s/style/SKINNAME/conf`. Fill in the following parameters:
 ```
-LoadModule rewrite_module modules/mod_rewrite.so
-AddHandler cgi-script .cgi .pl
+// name   example         description
+//------------------------------------------------------------------------------
+name      stylename       description of the style/name of the style
+author    Darkelarious    style author (commented in style.css for credits)
+
+// backgrounds
+bodybg    #222 body.gif   body background (texture)
+boxbg1    #333            box background (texture)
+boxbg2    #111            menu backgrounds, buttons, thumbnail/image boxes (texture)
+boxbg3    #222            odd row accents (texture)
+shadow    #222            shadow color (color)
+
+// text
+textcol1  #ccc            main text color
+textcol2  #0af            primary color for borders, links (color)
+textcol3  #ff0            secondary color for link:hover, actions (color)
+textcol4  #666            accent color for complementing main text color (color)
+
+// logos
+bglogo    333networks.png logo in background (recommended 75 px high max)
 ```
 
-Update the vhost configuration for the Web Interface to match your repository folder path:
+Some parameters can be colors, textures or both. Fields with the (texture) indication can be both images and colors, such as `#0af`, `#0af box.png`, `box.png`, but (color) implies color ONLY.  
+
+To compile a skin, run the command `./skingen.pl SKINNAME` from the `util` directory, where skinname is the lowercase folder name of your skin. The generated stylesheet can now be used in your webinterface config file under the `style => skinname` option.
+
+## Apache settings
+Update the vhost configuration for the Web Interface to match your repository folder path. You may be required to enable modules such as `mod_rewrite` and `fcgi`.
 
 ```
 #
