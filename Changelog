@@ -1,0 +1,5 @@
+Changelog:
+
+23-05-2021: first version of masterinterface
+* initial working version of webinterface compatible with MasterServer-Qt5
+* descriptive readme with user instructions

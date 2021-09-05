@@ -1,0 +1,116 @@
+package MasterWebInterface::Util::Layout;
+use strict;
+use warnings;
+use TUWF ':html';
+use Exporter 'import';
+our @EXPORT = qw| htmlHeader htmlFooter |;
+
+################################################################################
+# page header
+#   options: title, noindex
+################################################################################
+sub htmlHeader 
+{
+    my($self, %o) = @_;
+    
+    # CSS override: allow passing of style from GET --> ?style=classic
+    my $style = $self->{style};
+    if (my $overrideStyle = $self->reqParam("style") ) 
+    {
+        # default to custom style if specified option doesn't exist
+        $style = ( -e "$self->{root}/s/style/$overrideStyle" ) ? $overrideStyle : "basic";
+    }
+    
+    html lang => "en";
+        head;
+            title "$o{title} :: $self->{site_name} masterserver";
+            Link type => 'image/x-icon', rel => 'shortcut icon', href => "/favicon.ico";
+            Link type => "text/css", rel => 'stylesheet', href => "/style/$style/style.css", media => "all";
+            if ( $o{noindex} )
+            {
+                meta name => 'robots', content => 'noindex,nofollow,nosnippet,noodp,noarchive,noimageindex';end;
+            }
+        end 'head';
+        
+        body;
+        
+        my $topbar = $self->reqParam("topbar");
+        if ($topbar && lc $topbar eq "true" ) 
+        {
+            # games, servers, search bar
+            div class => 'nav';
+                # search box
+                form action => "/g", 'accept-charset' => 'UTF-8', method => 'get';
+                    fieldset class => 'search';
+                        p id => 'searchtabs';
+                            a href => '/g', class => 'sel', 'Games';
+                            a href => '/s', 'Servers';
+                            input type => 'text', name => 'q', id => 'q', class => 'text', value => '';
+                            input type => 'submit', class => 'submit', value => '', style => "display:none";
+                        end;
+                        a style => "font-size:x-small", href => "#", "advanced search";
+                    end 'fieldset';
+                end;
+            end;
+        }
+        
+            div id => "body";
+            
+                # start the page content with a header logo box
+                div class => "titlebox";
+                end;
+                
+                my $overrideStyle = $self->reqParam("style");
+                if ($overrideStyle) {
+                # debug feature: force list of styles on floaty-box
+                div class => "mainbox",
+                    style => "position:absolute; left: 20px; top: 20px; width:200px";
+                    
+                    div class => "header";
+                    h1 "Development";
+                        p class => "alttitle";
+                            txt "This site is under development. Find ";
+                            a href => "http://333networks.com", "333networks.com here!";
+                            br;
+                            txt "Use the list below to test different house styles.";
+                        end;
+                    end;
+                
+                    ul style => "margin: 3px 20px 10pt 40px";
+                        opendir(DIR, "$self->{root}/s/style") or die $!;
+                        while (my $file = readdir(DIR)) 
+                        {
+                            next if ($file =~ m/^\./);
+                            li;
+                                a href => "?style=$file", $file;
+                            end;
+                        }
+                        closedir(DIR);
+                    end;
+                end;
+                }
+}
+
+################################################################################
+# page footer
+#   options: last_edited
+################################################################################
+sub htmlFooter 
+{
+    my ($self, %o) = @_;
+    
+                br style => "clear:both";
+                
+                div id => 'footer';
+                    txt "$self->{site_name} | Powered by ";
+                    a href => "http://333networks.com", "333networks";
+                    txt " | ";
+                    txt $o{last_edited} || "2021";
+                end;
+            end 'div'; # body
+            script type => 'text/javascript', src => "/masterscript.js", '';
+        end 'body';
+    end 'html';
+}
+
+1;
