@@ -152,10 +152,10 @@ sub serverlist
                     td $gn;
                 }
                 
-                # game type (CTF, DM, Masterserver, CoopGame)
-                td class => "tc4", 
-                   title => $l->{gametype} // "", 
-                   $l->{gametype} // "";
+                # game type (hover: raw, display: parsed)
+                td class => "tc4",
+                    title => $l->{gametype}, 
+                    $self->better_gametype($l->{gametype});
                 
                 # number of players / maximum players
                 td class => "tc5"; 
@@ -165,11 +165,8 @@ sub serverlist
                 end;
                 
                 # map title/name
-                my $mapname  = $l->{mapname} // $l->{maptitle} // "";
-                my $maptitle = ( $l->{maptitle} && lc $l->{maptitle} ne "untitled" ) 
-                             ? $l->{maptitle}
-                             : $mapname;
-                td class => "tc6", title => $mapname, $maptitle;
+                my $maplabel = ($l->{maptitle} && lc $l->{maptitle} ne "untitled" ? $l->{maptitle} : $l->{mapname});
+                td class => "tc6", title => $maplabel // "---", $maplabel // "---";
             end;
         },
     );

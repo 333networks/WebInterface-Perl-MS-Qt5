@@ -1,12 +1,20 @@
 Changelog:
 
+09-09-2021: style fix, readable gametypes
+    * fix style so tabs are not overlapping title bars
+    * function to label game types as their readable counterparts
+    * replace "unknown" map title with mapname. Hover to display full name.
+    * adjust column widths to accomodate mapname and gametype length
+    * display only days after long timeout of server info update
+    
+
 05-09-2021: functional masterinterface with styles
-* remove json api documentation (now at 333networks.com/json)
-* refine the information fields in server info
-* add style generation code to utilities
-* 333networks style as default style
-* update readme with style generation instructions
+    * remove json api documentation (now at 333networks.com/json)
+    * refine the information fields in server info
+    * add style generation code to utilities
+    * 333networks style as default style
+    * update readme with style generation instructions
 
 23-05-2021: first version of masterinterface
-* initial working version of webinterface compatible with MasterServer-Qt5
-* descriptive readme with user instructions
+    * initial working version of webinterface compatible with MasterServer-Qt5
+    * descriptive readme with user instructions

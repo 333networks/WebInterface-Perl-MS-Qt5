@@ -165,7 +165,9 @@ sub writeskin
         # get height
         my ($w, $h) = imgsize("$ROOT/s/style/$name/$o{bglogo}") or die $!;
         $o{_bglogo} = "background: url(/style/$name/$o{bglogo}) no-repeat center 10px fixed;";
-        $o{_bgpadd} = "padding-top: " . int(500/$w*$h+20) . "px;";
+        
+        # padding compensates for div.mainbox { margin }
+        $o{_bgpadd} = "padding-top: " . int(500/$w*$h-5) . "px;";
     }
     
     # write the CSS

@@ -176,12 +176,17 @@ sub show_server
                     my @t = gmtime( time - ( $info->{dt_updated} // 0 ) );
 
                     my $diff;
-                    $diff .= ($t[5]-70)*365 + $t[7] > 0 ? ( ($t[5]-70)*365 + $t[7])."d" : "" ; # years+days
-                    $diff .= ($t[2] ? $t[2]."h" : ""); # hours
-                    $diff .= ($t[1] ? $t[1]."m" : ""); # minutes
-                    $diff .= ($t[0] ? sprintf "%02ds", $t[0] : ""); # seconds
+                    $diff .= ($t[5]-70)*365 + $t[7] > 0 ? ( ($t[5]-70)*365 + $t[7])." days" : "" ; # years+days
                     
+                    # if no years/days, add hours/minutes/seconds to display
+                    if ( ($t[5]-70)*365 + $t[7] <= 0 )
+                    {
+                        $diff .= ($t[2] ? $t[2]."h" : ""); # hours
+                        $diff .= ($t[1] ? $t[1]."m" : ""); # minutes
+                        $diff .= ($t[0] ? sprintf "%02ds", $t[0] : ""); # seconds
+                    }
                     
+                    # output and coloring
                     if ( length $diff )
                     {
                         span class => ( ($t[5]-70 or $t[7]) ? "r" : ($t[2] ? "o" : "g") ), $diff;
