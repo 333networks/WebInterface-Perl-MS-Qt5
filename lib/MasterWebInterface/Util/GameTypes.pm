@@ -18,19 +18,19 @@ sub better_gametype
         # general abbreviations
         "DM"    => "Deathmatch",
         "CTF"   => "Capture the Flag",
-        "COOP"  => "Cooperative Mission",
+        "COOP"  => "Co-op",
         
             
         # Rune
         "ArenaGameInfo"     => "Arena",
         "RuneMultiPlayer"   => "Deathmatch",
-        "TVGame"            => "Thirsty Vikings",
-        "SRGame"            => "Shadow Rules",
+        "TVgame"            => "Thirsty Vikings",
+        "SRgame"            => "Shadow Rules",
         "NomadsGame"        => "Nomads",
         "CapTheTorchGame"   => "Capture the Torch",
         "HeadBallGame"      => "Headball",
-        "SarkballGame"      => "Sarkball",
-        "VasArenaGame"      => "VAS Arena",
+        "SarkBallGame"      => "Sarkball",
+        "VasArenaGameInfo"      => "VAS Arena",
 
         # Unreal and Unreal Tournament
         "DeathMatchPlus"        => "Deathmatch",
