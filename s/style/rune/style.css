@@ -397,24 +397,34 @@ div.mainbox.detail div.header div.serverflags {
     float:right;
     overflow:hidden;
 }
-div.mainbox.detail div.header div.serverflags div {
-    width:48px;
-    height:48px;
+
+div.mainbox.detail div.header div.serverflags div.r,
+div.mainbox.detail div.header div.serverflags div.g {
+    background: #311;
     display:inline-block;
     border-left:1px solid #fa0;
-    background: #210;
+}
+div.mainbox.detail div.header div.serverflags div.g {
+    background: #131;
 }
 
 /* server flag icons */
-div.mainbox.detail div.header div.serverflags div.direct        {background: #131}
-div.mainbox.detail div.header div.serverflags div.manual        {background: #311}
-div.mainbox.detail div.header div.serverflags div.authed        {background: #131}
-div.mainbox.detail div.header div.serverflags div.noauthed      {background: #311}
-div.mainbox.detail div.header div.serverflags div.noblacklist   {background: #131}
-div.mainbox.detail div.header div.serverflags div.blacklist     {background: #311}
-div.mainbox.detail div.header div.serverflags div.nopasswd      {background: #131}
-div.mainbox.detail div.header div.serverflags div.passwd        {background: #311}
-  
+div.mainbox.detail div.header div.serverflags div div.direct        {background-image: url(/serverflags/direct.png);}
+div.mainbox.detail div.header div.serverflags div div.manual        {background-image: url(/serverflags/manual.png);}
+div.mainbox.detail div.header div.serverflags div div.authed        {background-image: url(/serverflags/authed.png);}
+div.mainbox.detail div.header div.serverflags div div.noauthed      {background-image: url(/serverflags/noauthed.png);}
+div.mainbox.detail div.header div.serverflags div div.noblacklist   {background-image: url(/serverflags/noblacklist.png);}
+div.mainbox.detail div.header div.serverflags div div.blacklist     {background-image: url(/serverflags/blacklist.png);}
+div.mainbox.detail div.header div.serverflags div div.nopasswd      {background-image: url(/serverflags/nopasswd.png);}
+div.mainbox.detail div.header div.serverflags div div.passwd        {background-image: url(/serverflags/passwd.png);}
+div.mainbox.detail div.header div.serverflags div div {
+    width:48px;
+    height:48px;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 40px 40px;
+    filter: brightness(0) saturate(100%) invert(73%) sepia(32%) saturate(5426%) hue-rotate(1deg) brightness(105%) contrast(104%);
+}
   
 div.mainbox.detail table {
   margin-bottom: 20px; 

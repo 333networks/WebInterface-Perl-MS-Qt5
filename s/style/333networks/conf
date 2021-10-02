@@ -1,5 +1,3 @@
-// template
-
 name      333networks
 author    Darkelarious
 
@@ -17,4 +15,7 @@ textcol3    #ff0
 textcol4    #666
 
 // logos
-bglogo    333networks.png
+bglogo      333networks.png
+
+// filter
+pngfilter   invert(49%) sepia(50%) saturate(4931%) hue-rotate(177deg) brightness(109%) contrast(104%)

@@ -14,6 +14,9 @@ our %S = (%S, # retain options from parent script
   # display
   style     => "333networks",
   
+  # rotate styles
+  rotate_styles => 0,
+  
   # display the style selection/test box
   style_box => 0, 
   

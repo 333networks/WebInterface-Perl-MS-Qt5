@@ -1,5 +1,3 @@
-// Old Unreal
-
 name      OldUnreal
 author    Smirftsch
 
@@ -18,3 +16,6 @@ textcol4    #777
 
 // logos
 bglogo      oldunreal.png
+
+// filter
+pngfilter   invert(50%) sepia(32%) saturate(2747%) hue-rotate(83deg) brightness(124%) contrast(117%)

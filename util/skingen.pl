@@ -12,35 +12,7 @@ use Cwd 'abs_path';
 # Here, SKINNAME is a lowercase folder and conf a plaintext file. In this folder
 # you can opt to place textures, logos and other pictures used in your skin.
 # 
-# In the conf file you describe the following color codes or textures:
-#
-# Options:
-# 
-# name      example         description
-# ------------------------------------------------------------------------------
-# name      stylename       description of the style/name of the style
-# author    Darkelarious    style author (commented in style.css for credits)
-#
-#// backgrounds
-# bodybg    #222 body.gif   body background (texture)
-# boxbg1    #333            box background (texture)
-# boxbg2    #111            menu backgrounds, buttons, thumbnail/image boxes (texture)
-# boxbg3    #222            odd row accents (texture)
-# shadow    #222            shadow color (color)
-#
-# // text
-# textcol1  #ccc            main text color
-# textcol2  #0af            primary color for borders, links (color)
-# textcol3  #ff0            secondary color for link:hover, actions (color)
-# textcol4  #666            accent color for complementing main text color (color)
-#
-# // logos
-# bglogo    333networks.png logo in background (recommended 75 px high max)
-#
-# ------------------------------------------------------------------------------
-# NOTE: some parameters can be colors, textures or both. (texture) can be both 
-# images and colors, such as #0af, #0af box.png, box.png, but (color) implies 
-# color ONLY.
+# For more information, see the README.md file of this repository.
 #
 # To compile a skin, run the command "./skingen.pl SKINNAME" where skinname is
 # the lowercase folder name of your skin. The output is a style.css file in your
@@ -168,6 +140,14 @@ sub writeskin
         
         # padding compensates for div.mainbox { margin }
         $o{_bgpadd} = "padding-top: " . int(500/$w*$h-5) . "px;";
+    }
+    
+    # png filter for symbols
+    $o{_png_filter} = "";
+    if (length($o{pngfilter} // "") > 1)
+    {
+        # symbol picture is white. filter assumes picture is black. force symbol to black first.
+        $o{_png_filter} = "filter: brightness(0) saturate(100%) $o{pngfilter};";
     }
     
     # write the CSS

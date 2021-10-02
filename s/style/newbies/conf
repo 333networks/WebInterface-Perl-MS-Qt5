@@ -1,5 +1,3 @@
-// newbiesplayground.net
-
 name      newbies
 author    Strategy
 
@@ -17,4 +15,7 @@ textcol3    #3abe25
 textcol4    #666
 
 // logos
-bglogo    newbs2.png
+bglogo      newbs2.png
+
+// filter
+pngfilter   invert(43%) sepia(11%) saturate(3275%) hue-rotate(66deg) brightness(93%) contrast(88%)

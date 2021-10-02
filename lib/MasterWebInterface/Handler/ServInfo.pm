@@ -102,26 +102,26 @@ sub show_server
                 
                 # uplink or manually added/through applet
                 if ( $info->{f_direct} ) 
-                { div class => "direct", title => "This server uplinks directly to $self->{site_name}.", ""; }
+                { div class => "g"; div class => "direct", title => "This server uplinks directly to $self->{site_name}.", ""; end;}
                 else
-                { div class => "manual", title => "This server was added through master synchronisation and does not uplink to $self->{site_name}.", ""; }
+                { div class => "r"; div class => "manual", title => "This server was added through master synchronisation and does not uplink to $self->{site_name}.", ""; end;}
                 
                 # authenticated through secure/validate
                 if ( $info->{f_auth} )
-                { div class => "authed",   title => "This server authenticated through the secure/validate challenge.", ""; }
+                { div class => "g"; div class => "authed",   title => "This server authenticated through the secure/validate challenge.", ""; end;}
                 else
-                { div class => "noauthed", title => "This server failed the secure/validate challenge or did not reply.", ""; }
+                { div class => "r"; div class => "noauthed", title => "This server failed the secure/validate challenge or did not reply.", ""; end;}
                 
                 # server blacklisted?
                 if ( $info->{f_blacklist} )
-                { div class => "blacklist",   title => "This server is blacklisted for violating the $self->{site_name} Terms of Use or by request from the administrator.", ""; }
+                { div class => "r"; div class => "blacklist",   title => "This server is blacklisted for violating the $self->{site_name} Terms of Use or by request from the administrator.", ""; end;}
                 else
-                { div class => "noblacklist", title => "This server is not blacklisted by $self->{site_name}.", ""; }
+                { div class => "g"; div class => "noblacklist", title => "This server is not blacklisted by $self->{site_name}.", ""; end;}
                 
                 if ( $info->{passworded} and $info->{passworded} =~ /(true|1)/i )
-                { div class => "passwd",   title => "This server requires a password to join.", ""; }
+                { div class => "r"; div class => "passwd",   title => "This server requires a password to join.", ""; end;}
                 else
-                { div class => "nopasswd", title => "This server is accessible for everybody.", "";}
+                { div class => "g"; div class => "nopasswd", title => "This server is accessible for everybody.", ""; end;}
             end;    
             h1 title  => $info->{hostname} // "[unnamed $gamename server]",
                          $info->{hostname} // "[unnamed $gamename server]";   
@@ -173,7 +173,7 @@ sub show_server
                 span title => ("Server was added on ". strftime "%e %b %Y", gmtime ($info->{dt_added} // 0) );
                     
                     txt "information updated ";
-                    my @t = gmtime( time - ( $info->{dt_updated} // 0 ) );
+                    my @t = gmtime( time - ( $info->{dt_serverinfo} // 0 ) );
 
                     my $diff;
                     $diff .= ($t[5]-70)*365 + $t[7] > 0 ? ( ($t[5]-70)*365 + $t[7])." days" : "" ; # years+days

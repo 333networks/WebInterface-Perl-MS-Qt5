@@ -1,5 +1,3 @@
-// template
-
 name      errorist
 author    Syntax-Error
 
@@ -17,4 +15,7 @@ textcol3    #f88
 textcol4    #666
 
 // logos
-bglogo    errorist.png
+bglogo      errorist.png
+
+// filter
+pngfilter   invert(49%) sepia(74%) saturate(755%) hue-rotate(207deg) brightness(101%) contrast(101%)

@@ -1,5 +1,3 @@
-// template
-
 name      gonespy
 author    CougarXR7
 
@@ -18,3 +16,6 @@ textcol4    #777
 
 // logos
 bglogo      gonespytm.png
+
+// filter
+pngfilter   invert(45%) sepia(84%) saturate(1025%) hue-rotate(85deg) brightness(110%) contrast(130%)

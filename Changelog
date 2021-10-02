@@ -1,5 +1,13 @@
 Changelog:
 
+02-10-2021: serverflag symbols and style rotation
+    * display serverflag symbols on top right area of servername
+    * update styles to match
+    * add more game icons
+    * automatically rotate styles for special events like halloween, christmas
+    * sanity check for whether a provided style exists (assumes settings are valid)
+    * update manual with rotate_style setting info and skingen symbol filter
+
 09-09-2021: style fix, readable gametypes
     * fix style so tabs are not overlapping title bars
     * function to label game types as their readable counterparts

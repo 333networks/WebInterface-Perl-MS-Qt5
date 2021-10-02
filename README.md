@@ -42,6 +42,12 @@ When more than one website style exists, it can be selected in the following opt
   style => "333networks",
 ```
 
+It is possible to automatically apply styles for April's Fools, Halloween and Christmas. This is enabled with the following option, which is disabled by default. When style folders do not exist for these events, the default style remains active.
+```
+  # rotate styles
+  rotate_styles => 1,
+```
+
 By default, only servers that have updated in the last half hour are shown. To show servers for a shorter or longer period of time after the last update increase or decrease the value of the option `window_time`. This value is provided in seconds (3600 seconds is 1 hour).
 ```
   # do not display servers older than [seconds]
@@ -71,11 +77,14 @@ textcol4  #666            accent color for complementing main text color (color)
 
 // logos
 bglogo    333networks.png logo in background (recommended 75 px high max)
+
+// symbol filter
+pngfilter sepia(56%)      css filter property to match status symbols with text colors
 ```
 
-Some parameters can be colors, textures or both. Fields with the (texture) indication can be both images and colors, such as `#0af`, `#0af box.png`, `box.png`, but (color) implies color ONLY.  
+Some parameters can be colors, textures or both. Fields with the (texture) indication can be both images and colors, such as `#0af`, `#0af box.png`, `box.png`, but (color) implies color ONLY. The CSS `filter` property to match the status symbols can be automatically calculated on <https://codepen.io/sosuke/pen/Pjoqqp>.  
 
-To compile a skin, run the command `./skingen.pl SKINNAME` from the `util` directory, where skinname is the lowercase folder name of your skin. The generated stylesheet can now be used in your webinterface config file under the `style => skinname` option.
+To compile a skin, run the command `./skingen.pl SKINNAME` from the `util` directory, where skinname is the lowercase folder name of your skin. The generated stylesheet can now be used in your webinterface config file under the `style => skinname` option. Stylesheets may be edited manually, but running the command again will overwrite previous changes without confirmation.
 
 ## Apache settings
 Update the vhost configuration for the Web Interface to match your repository folder path. You may be required to enable modules such as `mod_rewrite` and `fcgi`.
