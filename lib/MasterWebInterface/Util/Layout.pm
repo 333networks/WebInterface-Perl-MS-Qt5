@@ -16,13 +16,16 @@ sub htmlHeader
     # CSS override: allow passing of style from GET --> ?style=classic
     my $style = $self->{style};
     
-    # rotate styles for different occasions.
-    my @dt = localtime(time);
-    # specify dates [m/d] = styles
-    if ($dt[4] == 2  && $dt[3] == 31) {$style = "april";} # 31 mar and 1 apr
-    if ($dt[4] == 3  && $dt[3] ==  1) {$style = "april";}
-    if ($dt[4] == 9  && $dt[3] >=  1) {$style = "halloween";}
-    if ($dt[4] == 11 && $dt[3] >=  7) {$style = "xmas";}    
+    if ( $self->{rotate_styles} )
+    {
+        # rotate styles for different occasions.
+        my @dt = localtime(time);
+        # specify dates [m/d] = styles
+        if ($dt[4] == 2  && $dt[3] == 31) {$style = "april";} # 31 mar and 1 apr
+        if ($dt[4] == 3  && $dt[3] ==  1) {$style = "april";}
+        if ($dt[4] == 9  && $dt[3] >=  1) {$style = "halloween";}
+        if ($dt[4] == 11 && $dt[3] >=  7) {$style = "xmas";}    
+    }
     
     if (my $overrideStyle = $self->reqParam("style") ) 
     {

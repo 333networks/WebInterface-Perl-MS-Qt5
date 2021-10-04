@@ -1,5 +1,8 @@
 Changelog:
 
+04-10-2021: style rotation through setting
+    * enable/disable style rotation with the setting
+
 02-10-2021: serverflag symbols and style rotation
     * display serverflag symbols on top right area of servername
     * update styles to match
