@@ -13,10 +13,13 @@ This repository contains software for a web interface to display information obt
 * Apache/httpd
 * Perl 5.10 or above
 * The following CPAN modules:
-    * DBI
-    * DBD::SQLite
-    * TUWF
-    * Image::Size (optional for style generation)
+    * `DBI`
+    * `DBD::SQLite`
+    * `TUWF`
+    * `JSON`
+    * `Image::Size` (optional for style generation)
+    * `AnyEvent` (optional for IP to Country lookup)
+    * `LWP::Simple` (optional for IP to Country lookup)
 
 ## INSTALL
 This repository consists of Perl modules and is run by a http deamon. First, the MasterServer-Qt5 repository should be installed and configured in order to run this web interface. This web interface requires access to the database generated and updated by MasterServer-Qt5.
@@ -30,7 +33,7 @@ The 333networks masterserver interface comes with options. These options are fou
   email     => 'master@333networks.com',
 ```
 
-Configure the path to the database that the masterserver uses. The location of this database is found in the documentation of `MasterServer-Qt5`.
+Configure the path to the database that the masterserver uses. The location of this database is found in the documentation of `MasterServer-Qt5`. Depending on your configuration, you may have to apply user permissions with `chmod 644 masterserver.db` before the website can interact with it.
 ```
   # database connection
   db_login => ["dbi:SQLite:dbname=/path/to/your/data/masterserver.db",'',''],
@@ -86,6 +89,9 @@ Some parameters can be colors, textures or both. Fields with the (texture) indic
 
 To compile a skin, run the command `./skingen.pl SKINNAME` from the `util` directory, where skinname is the lowercase folder name of your skin. The generated stylesheet can now be used in your webinterface config file under the `style => skinname` option. Stylesheets may be edited manually, but running the command again will overwrite previous changes without confirmation.
 
+## Optional: IP to Country lookup
+The masterserver does not perform an IP to Country lookup. The `listcountry.pl` Perl script queries an IP every 10 seconds through the <ip-api.com> public Json API and inserts successful queries in the masterserver database.
+
 ## Apache settings
 Update the vhost configuration for the Web Interface to match your repository folder path. You may be required to enable modules such as `mod_rewrite` and `fcgi`.
 
@@ -117,8 +123,7 @@ CustomLog /path/to/WebInterface-Perl-MS-Qt5/log/Access.log combined
 
 ## KNOWN ISSUES
 There are a few known issues that will be resolved in future versions. The following issues are listed and do not need to be reported.
-* No additional styling available for third parties. Will come when the rest of the website is stable.
-* Country name/flag is always "Earth". There is a third party script that updates these in the database, which may or may not be released in the future.
+* no issues tracked!
 
 ## COPYING
 See COPYING file
