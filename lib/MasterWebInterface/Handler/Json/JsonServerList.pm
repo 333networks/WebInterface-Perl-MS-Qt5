@@ -16,10 +16,8 @@ TUWF::register(
 ################################################################################
 sub serverlist_json 
 {
-    my($self, $gamename, $char) = @_;
+    my($self, $gamename) = @_;
     $gamename = "all" unless $gamename;
-    
-    # TODO DEPRECATE $char
 
     # sorting, page
     my $f = $self->formValidate(
@@ -59,6 +57,12 @@ sub serverlist_json
             default => '',  
             maxlength => 90 
         },
+        {
+            get => 'a', 
+            required => 0, 
+            default => '', 
+            maxlength => 200 
+        },
     );
     return $self->resNotFound if $f->{_err};
     
@@ -71,7 +75,11 @@ sub serverlist_json
         page     => $f->{p},
         results  => $f->{r},
         updated  => $self->{window_time},
-        gametype => $f->{g}, # TODO: implement in DB query
+        gametype => $f->{g},
+        
+        # parse extra request parameters like version, populated, etc
+        ($f->{a} =~ m/popserv/ig) ? (popserv => 1) : (),
+        ($f->{a} =~ m/utdemo/ig)  ? (utdemo  => 1) : (),
     );
     
     # get total number of players

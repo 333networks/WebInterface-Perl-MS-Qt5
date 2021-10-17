@@ -27,7 +27,6 @@ sub htmlSearchBox
             fieldset class => 'search';
                 a href => '/g',    $opt{sel} eq 'g' ? (class => 'sel') : (), 'Games';
                 a href => '/s',    $opt{sel} eq 's' ? (class => 'sel') : (), 'Servers';
-                #a href => '/json', $opt{sel} eq 'j' ? (class => 'sel') : (), 'Json API';
                 input type => 'text', name => 'q', id => 'q', class => 'text', 
                     value => $opt{fq} || 'search...';
                 input type => 'submit', class => 'submit', value => 'submit';

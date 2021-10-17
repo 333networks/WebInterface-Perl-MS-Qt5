@@ -17,11 +17,13 @@ sub dbServerListGet {
     
   my %where = (
     # gamename and char are "all" or value
+    $o{updated}           ? ('dt_updated > ?'                => (time-$o{updated})) : (),
     $o{gamename} !~ /all/ ? ('serverlist.gamename = ?'       => $o{gamename})       : (),
     $o{nolist}            ? ('serverlist.gamename <> ?'      => $o{nolist})         : (),
     $o{search}            ? ('LOWER(hostname) LIKE LOWER(?)' => "%$o{search}%")     : (),
-    $o{gametype}          ? ('LOWER(gametype) LIKE LOWER(?)' => $o{gametype})       : (),
-    $o{updated}           ? ('dt_updated > ?'                => (time-$o{updated})) : (),
+    $o{gametype}          ? ('LOWER(gametype) LIKE LOWER(?)' => lc $o{gametype})    : (),
+    $o{popserv}           ? ('numplayers > ?'                => 0)                  : (),
+    $o{utdemo}            ? ('gamever = ?'                   => '348')              : (),
     ('hostport > ?' => 0), # sanity check (unresponsive servers or faulty queries tools)
   );
   

@@ -1,5 +1,9 @@
 Changelog:
 
+17-10-2021: additional Json API support
+    * database queries for gametype and specific request
+    * json api accepts additional options for requests
+
 04-10-2021: country lookup
     * backend Perl script for ip to country lookup (external script)
     * update readme with ip to country and perl/cpan modules
