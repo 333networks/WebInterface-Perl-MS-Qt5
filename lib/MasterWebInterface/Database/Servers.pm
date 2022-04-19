@@ -24,7 +24,9 @@ sub dbServerListGet {
     $o{gametype}          ? ('LOWER(gametype) LIKE LOWER(?)' => lc $o{gametype})    : (),
     $o{popserv}           ? ('numplayers > ?'                => 0)                  : (),
     $o{utdemo}            ? ('gamever = ?'                   => '348')              : (),
-    ('hostport > ?' => 0), # sanity check (unresponsive servers or faulty queries tools)
+    
+    # sanity check for unresponsive servers or faulty queries tools, except ST:Bcommander which /is/ faulty by default
+    $o{gamename} !~ /bcommander/ ? ('hostport > ?' => 0) : (),
   );
   
   my @select = ( qw| id ip hostport hostname serverlist.gamename country numplayers maxplayers maptitle mapname gametype dt_added label dt_updated| );

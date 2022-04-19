@@ -1,5 +1,8 @@
 Changelog:
 
+19-04-2022: list Star Trek Bridge Commander games
+    * minor sanity check bypassed because bcommander has hostport 0 by default
+
 17-10-2021: additional Json API support
     * database queries for gametype and specific request
     * json api accepts additional options for requests
