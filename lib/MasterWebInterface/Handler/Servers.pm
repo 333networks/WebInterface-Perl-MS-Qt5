@@ -5,15 +5,14 @@ use TUWF ':html';
 use Exporter 'import';
 
 TUWF::register(
-    qr{}                        => \&serverlist,
-    qr{s}                       => \&serverlist,
-    qr{s/(.[\w]{1,20})}         => \&serverlist,
+    qr{}                => \&serverlist,
+    qr{s}               => \&serverlist,
+    qr{s/([\w]{1,20})}  => \&serverlist,
 );
 
-################################################################################
-# List servers
+#
 # Generate a list of selected games in the database per game (arg: gamename)
-################################################################################
+#
 sub serverlist 
 {
     my($self, $gamename) = @_;
@@ -21,42 +20,12 @@ sub serverlist
     
     # sorting, page
     my $f = $self->formValidate(
-        {
-            get => 's',
-            required => 0,
-            default => 'gamename',
-            enum => [ qw| hostname gamename country dt_added gametype numplayers mapname | ] 
-        },
-        {
-            get => 'o', 
-            required => 0, 
-            default => 'a', 
-            enum => [ 'a','d' ] 
-        },
-        {
-            get => 'p', 
-            required => 0, 
-            default => 1, 
-            template => 'page',
-        },
-        {
-            get => 'q', 
-            required => 0, 
-            default => '', 
-            maxlength => 90 
-        },
-        { 
-            get => 'r', 
-            required => 0, 
-            default => 50, 
-            template => 'page' 
-        },
-        { 
-            get => 'g', 
-            required => 0, 
-            default => '',  
-            maxlength => 90 
-        },
+        {   get => 's', required => 0, default => 'gamename',enum => [ qw| hostname gamename country dt_added gametype numplayers mapname | ] },
+        {   get => 'o', required => 0, default => 'a',enum      => [ 'a','d' ] },
+        {   get => 'p', required => 0, default => 1,  template  => 'page',},
+        {   get => 'r', required => 0, default => 50, template  => 'page' },
+        {   get => 'q', required => 0, default => '', maxlength => 90 },
+        {   get => 'g', required => 0, default => '', maxlength => 90 },
     );
     return $self->resNotFound if $f->{_err};
     
@@ -77,10 +46,6 @@ sub serverlist
     # game name description in title
     my $gn_desc = $self->dbGetGameDesc($gamename) // $gamename;
     
-    #
-    # page 
-    #
-    
     # Write page  
     $self->htmlHeader(title => "Browse $gn_desc game servers");
     $self->htmlSearchBox(
@@ -90,7 +55,6 @@ sub serverlist
         fq => $f->{q}
     );
 
-    
     #
     # server list
     $self->htmlBrowse(
@@ -128,8 +92,8 @@ sub serverlist
                    title => $country, 
                    '';
                 
-                # server name
-                my $ip = $self->to_ipv4_str($l->{ip});
+                # server name (and defaults)
+                my $ip = $l->{ip} // "0.0.0.0";
                 my $hp = $l->{hostport} // 0;      
                 my $gn = $l->{gamename} // "";
                 td class => "tc2"; 

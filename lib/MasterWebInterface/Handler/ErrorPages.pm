@@ -12,9 +12,22 @@ TUWF::register(
     qr{500} => sub {die "Process died on purpose, but with a lot of text to test if the whole error is correctly displayed on the screen when debug information is enabled in the website configuration, "},
 );
 
+#
+# 404 page or json status
 sub handle404 
 {
     my $self = shift;
+
+    # json error status separately
+    if ( $self->reqPath() =~ m/^\/json/ig)
+    {
+        $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+        $self->resJSON({
+            error => 1, 
+            in => "url_format"
+        });
+        return;
+    }
     
     $self->resStatus(404);
     $self->htmlHeader(title => '404 - Not Found');
@@ -37,9 +50,23 @@ sub handle404
     $self->htmlFooter;
 }
 
+#
+# 500 page or json status
 sub handle500 
 {
     my($self, $error) = @_;
+    
+    # json error status separately
+    if ( $self->reqPath() =~ m/^\/json/ig)
+    {
+        $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+        $self->resJSON({
+            error => 1, 
+            in => "internal_error", 
+            internal => ( $self->debug ? $error : () )
+        });
+        return;
+    }
     
     $self->resStatus(500);
     $self->htmlHeader(title => '500 - Internal Server Error');

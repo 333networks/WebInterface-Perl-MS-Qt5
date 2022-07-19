@@ -8,7 +8,7 @@ use Exporter 'import';
 our @EXPORT = qw| motd_static |;
 
 TUWF::register(
-  qr{json/(.[\w]{1,20})/motd}            => \&json_motd,
+    qr{json/([\w]{1,20})/motd} => \&json_motd,
 );
 
 # Message of the Day for things like the JSON API or updateserver page

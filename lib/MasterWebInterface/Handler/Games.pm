@@ -2,7 +2,6 @@ package MasterWebInterface::Handler::Games;
 
 use strict;
 use utf8;
-
 use TUWF ':html';
 use Exporter 'import';
 
@@ -11,46 +10,20 @@ TUWF::register(
     qr{g(|/all)} => \&gamelist,
 );
 
-################################################################################
-# LIST GAMES
+#
 # Generate a list of games in the database (arg: gamename)
-################################################################################
+#
 sub gamelist 
 {
     my ($self, $all) = @_;
     
     # process additional query information, such as order, sorting, page, etc
     my $f = $self->formValidate(
-        { 
-            get => 's', 
-            required => 0, 
-            default => 'num_total', 
-            enum => [ qw| label gamename num_total | ] 
-        },
-        {
-            get => 'o', 
-            required => 0, 
-            default => 'd', 
-            enum => [ 'a','d' ] 
-        },
-        {
-            get => 'p', 
-            required => 0, 
-            default => 1, 
-            template => 'page'
-        },
-        {
-            get => 'q', 
-            required => 0, 
-            default => '', 
-            maxlength => 30 
-        },
-        { 
-            get => 'r', 
-            required => 0, 
-            default => 50, 
-            template => 'page' 
-        }
+        {   get => 's', required => 0, default => 'num_total', enum => [ qw| label gamename num_total | ] },
+        {   get => 'o', required => 0, default => 'd', enum      => [ 'a','d' ] },
+        {   get => 'p', required => 0, default => 1,   template  => 'page'},
+        {   get => 'r', required => 0, default => 50,  template  => 'page' },
+        {   get => 'q', required => 0, default => '',  maxlength => 30 },
     );
     return $self->resNotFound if $f->{_err};
     
@@ -64,11 +37,7 @@ sub gamelist
         all     => $all,
         
     );
-    
-    #
-    # page
-    #
-    
+
     $self->htmlHeader(title => "Browse Games");
     $self->htmlSearchBox(title => "Games", action => "/g/all", sel => 'g', fq => $f->{q});
     
@@ -130,8 +99,8 @@ sub gamelist
                 }
                 
                 # number of beacons / servers
-                td title => ($l->{num_direct} // 0) . "/" . ($l->{num_total} // 0), 
-                $l->{num_total} // 0;
+                td title => ($l->{num_direct} // 0) . " / " . ($l->{num_total} // 0), 
+                $l->{num_direct} // 0;
             end;
         },
     );

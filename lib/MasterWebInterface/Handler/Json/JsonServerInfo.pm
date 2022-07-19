@@ -5,21 +5,16 @@ use Exporter 'import';
 use JSON;
 
 TUWF::register(
-    qr{json/(.[\w]{1,20})/([\:\.\w]{9,35})} => \&json_serverinfo,
+    qr{json/([\w]{1,20})/(\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}):(\d{1,5})} => \&json_serverinfo, # ipv6
+    qr{json/([\w]{1,20})/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})}              => \&json_serverinfo, # ipv4
 );
 
-################################################################################
-# Server Info
-# Show server info for an individual server
-# Same as &server_info, but with json output. 
-# returns "error:1" if errors occurred
-################################################################################
+#
+# Show server info for an individual server.
+# 
 sub json_serverinfo 
 {
-    my ($self, $gamename, $s_addr, $s_port) = @_;
-
-    # parse from ipv4/6 and soft sanity check
-    my ($ip, $port) = $self->from_addr_str($s_addr);
+    my ($self, $gamename, $ip, $port) = @_;
 
     # select server from database
     my $info = $self->dbGetServerInfo(
@@ -28,20 +23,16 @@ sub json_serverinfo
         limit => 1,
     )->[0] if ($ip && $port);
 
-    # display an error in case of an invalid IP or port
+    # return error state on invalid IP/port
     unless ($info)
     {
-        my %err = (error => 1, ip => $ip, port => $port);
-        my $e = \%err;
-        my $json_data = encode_json $e;
-        my $json_data_size = keys %$e;
-
-        # return json data as the response
-        print { $self->resFd() } $json_data;
-
-        # set content type at the end
-        $self->resHeader("Access-Control-Allow-Origin", "*");
         $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+        $self->resJSON({
+            error => 1,
+            in    => "not_in_db",
+            ip    => $ip, 
+            port  => $port, 
+        });
         return;
     }
 
@@ -54,13 +45,8 @@ sub json_serverinfo
         $players{"player_$i"} = $pl_list->[$i];
     }
     
-    use Data::Dumper 'Dumper';
-    my $str = Dumper $pl_list;
-    
-    # merge 
-    #$info = { %$info, %$details } if $details;
+    # merge with rest of info
     $info = { %$info, %players  } if %players;
-
 
     # find the correct thumbnail, otherwise game default, otherwise 333 default
     my $mapname = lc $info->{mapname};
@@ -83,17 +69,10 @@ sub json_serverinfo
         # 333networks default
         $info->{mapurl} = "/map/default/333networks.jpg";
     }
-    
-    # encode
-    my $json_data = encode_json $info;
-    my $json_data_size = keys %$info;
 
     # return json data as the response
-    print { $self->resFd() } $json_data;
-
-    # set content type and allow off-domain access (for example jQuery)
-    $self->resHeader("Access-Control-Allow-Origin", "*");
     $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+    $self->resJSON($info);
 }
 
 1;

@@ -1,4 +1,10 @@
 Changelog:
+    
+19-07-2022: simplify address format
+    * narrow address matching regexes
+    * json error handling and error status
+    * remove ipv4/ipv6 format rewriting
+    * only accept clean ipv4/ipv6 addresses, no hybrid/converted formats
 
 19-04-2022: list Star Trek Bridge Commander games
     * minor sanity check bypassed because bcommander has hostport 0 by default

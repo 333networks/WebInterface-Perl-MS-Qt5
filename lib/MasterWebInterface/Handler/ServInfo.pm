@@ -7,21 +7,17 @@ use POSIX 'strftime';
 use Exporter 'import';
 
 TUWF::register(
-    qr{(.[\w]{1,20})/([\:\.\w]{9,35})} => \&show_server,
+    qr{([\w]{1,20})/(\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}):(\d{1,5})} => \&show_server, #ipv6
+    qr{([\w]{1,20})/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})}              => \&show_server, #ipv4
 );
 
-################################################################################
+#
 # Display server information
-# Verify if game and server (ip:hostport) exist. Display as many available
-# values as possible.
-# Display error pages if not found or incorrect.
+#
 ################################################################################
 sub show_server
 {
-    my ($self, $gamename, $s_addr) = @_;
-    
-    # parse from ipv4/6 and soft sanity check
-    my ($ip, $port) = $self->from_addr_str($s_addr);
+    my ($self, $gamename, $ip, $port) = @_;
     
     # select server from database
     my $info = $self->dbGetServerInfo(
@@ -66,7 +62,7 @@ sub show_server
                 
                 p;
                     txt "You tried to access ";
-                    span class => "hilit", $self->to_ipv4_str($s_addr) // "[no ip]";
+                    span class => "hilit", $ip // "[no ip]";
                     txt " in ";
                     span class => "hilit", $gamename;
                     txt ".";
@@ -212,7 +208,7 @@ sub show_server
             Tr; 
                 td "Address:"; 
                 td title => $info->{queryport} // 0;
-                    txt $self->to_ipv4_str($info->{ip}) // "0.0.0.0";
+                    txt $info->{ip} // "0.0.0.0";
                     txt ":";
                     txt $info->{hostport} // 0;
                 end;
@@ -444,7 +440,20 @@ sub show_server
                     a href => "http://333networks.com/json", title => "For more info, click to go to 333networks.com/json", "Json API";
                 end;
             end;
-            td ($self->{site_url} . "/json/" . $gamename . "/" . ( $self->to_ipv4_str($info->{ip}) // "0.0.0.0" ) . ":" . ($info->{hostport} // 0));
+            td;
+                a href => ($self->{site_url} . "/json/" . $gamename . "/" . ($info->{ip} // "0.0.0.0") . ":" . ($info->{hostport} // 0) ),
+                          ($self->{site_url} . "/json/" . $gamename . "/" . ($info->{ip} // "0.0.0.0") . ":" . ($info->{hostport} // 0) );
+            end;
+            
+            Tr; 
+                th;
+                    txt "Server Banner:";
+                end;
+            end;
+            td;
+                a href => ($self->{site_url} . "/png/" . $gamename . "/" . ( $info->{ip} // "0.0.0.0" ) . ":" . ($info->{hostport} // 0)),
+                          ($self->{site_url} . "/png/" . $gamename . "/" . ( $info->{ip} // "0.0.0.0" ) . ":" . ($info->{hostport} // 0));
+            end;
         end;
       
     end; # mainbox details

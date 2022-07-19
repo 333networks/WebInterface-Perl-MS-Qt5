@@ -16,7 +16,7 @@ This repository contains software for a web interface to display information obt
     * `DBI`
     * `DBD::SQLite`
     * `TUWF`
-    * `JSON`
+    * `JSON:XS`
     * `Image::Size` (optional for style generation)
     * `AnyEvent` (optional for IP to Country lookup)
     * `LWP::Simple` (optional for IP to Country lookup)
