@@ -27,10 +27,13 @@ sub serverlist_json
         {   get => 'a', required => 0, default => '',  maxlength => 200     },
     );
     
+    # allow all outside sources to access the json api
+    $self->resHeader("Access-Control-Allow-Origin", "*");
+    
     # generate json error data if errors in field
     if ( $f->{_err} )
     {
-        $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+        # response as json data
         $self->resJSON({
             error   => 1, 
             in      => "options", 
@@ -55,16 +58,18 @@ sub serverlist_json
         ($f->{a} =~ m/utdemo/ig)  ? (utdemo  => 1) : (),
     );
     
-    # get total number of players
+    # get total number of players in selected page(s)
     my $pl = 0;
     for (@{$list}) 
     {
         $pl += $_->{numplayers}
     }
     
-    # return json data as the response
-    $self->resHeader("Content-Type", "application/json; charset=UTF-8");
-    $self->resJSON( [$list, {total => $p, players => $pl}] );
+    # response as json data
+    $self->resJSON([
+        $list, 
+        {total => $p, players => $pl}
+    ]);
 }
 
 1;

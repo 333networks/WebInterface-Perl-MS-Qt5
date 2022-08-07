@@ -22,11 +22,14 @@ sub json_serverinfo
         hostport => $port,
         limit => 1,
     )->[0] if ($ip && $port);
-
+    
+    # allow all outside sources to access the json api
+    $self->resHeader("Access-Control-Allow-Origin", "*");
+    
     # return error state on invalid IP/port
     unless ($info)
     {
-        $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+        # response as json data
         $self->resJSON({
             error => 1,
             in    => "not_in_db",
@@ -70,8 +73,7 @@ sub json_serverinfo
         $info->{mapurl} = "/map/default/333networks.jpg";
     }
 
-    # return json data as the response
-    $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+    # response as json data
     $self->resJSON($info);
 }
 

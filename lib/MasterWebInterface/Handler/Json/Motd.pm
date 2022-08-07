@@ -30,22 +30,26 @@ sub json_motd
     # get numServers
     my ($l,$x,$s) = $self->dbServerListGet(
         gamename => $gamename, 
-        results  => 100,
+        updated  => $self->{window_time},
+        limit => 9999,
+        sort     => "numplayers", 
+        reverse  => 1,
     );
     
     my $p = 0;
     for (@{$l}) 
     {
-        $p += $_->{numplayers}
+        $p += $_->{numplayers};
+        last unless $_->{numplayers}
     }
     
-    # return json data as the response
-    my $json_data = encode_json [{motd => $html}, {total => $s, players => $p}];
-    print { $self->resFd() } $json_data;
-    
-    # set content type and allow off-domain access (for example jQuery)
+    # response as json data
     $self->resHeader("Access-Control-Allow-Origin", "*");
-    $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+    $self->resJSON([
+        {motd => $html}, 
+        {total => $s, players => $p}
+    ]);
+
 }
 
 1;

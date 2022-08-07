@@ -1,4 +1,9 @@
 Changelog:
+
+07-08-2022: fixes in Json API
+    * update manual to reflect use of JSON instead of JSON::XS
+    * fix a few specific ubrowser functions
+    * set access policies to allow all sources
     
 19-07-2022: simplify address format
     * narrow address matching regexes

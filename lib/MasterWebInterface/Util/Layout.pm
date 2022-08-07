@@ -107,15 +107,13 @@ sub htmlHeader
 ################################################################################
 sub htmlFooter 
 {
-    my ($self, %o) = @_;
+    my $self = shift;
     
                 br style => "clear:both";
                 
                 div id => 'footer';
                     txt "$self->{site_name} | Powered by ";
-                    a href => "http://333networks.com", "333networks";
-                    txt " | ";
-                    txt $o{last_edited} || "2021";
+                    a href => "https://333networks.com", "333networks";
                 end;
             end 'div'; # body
             script type => 'text/javascript', src => "/masterscript.js", '';

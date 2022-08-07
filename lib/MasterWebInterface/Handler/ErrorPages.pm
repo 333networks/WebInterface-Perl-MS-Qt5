@@ -21,7 +21,8 @@ sub handle404
     # json error status separately
     if ( $self->reqPath() =~ m/^\/json/ig)
     {
-        $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+        # response as json data
+        $self->resHeader("Access-Control-Allow-Origin", "*");
         $self->resJSON({
             error => 1, 
             in => "url_format"
@@ -59,7 +60,8 @@ sub handle500
     # json error status separately
     if ( $self->reqPath() =~ m/^\/json/ig)
     {
-        $self->resHeader("Content-Type", "application/json; charset=UTF-8");
+        # response as json data
+        $self->resHeader("Access-Control-Allow-Origin", "*");
         $self->resJSON({
             error => 1, 
             in => "internal_error", 
