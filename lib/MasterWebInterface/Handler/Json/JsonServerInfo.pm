@@ -21,7 +21,7 @@ sub json_serverinfo
         ip => $ip,
         hostport => $port,
         limit => 1,
-    )->[0] if ($ip && $port);
+    )->[0];
     
     # allow all outside sources to access the json api
     $self->resHeader("Access-Control-Allow-Origin", "*");
@@ -33,8 +33,8 @@ sub json_serverinfo
         $self->resJSON({
             error => 1,
             in    => "not_in_db",
-            ip    => $ip, 
-            port  => $port, 
+            ip    => $ip // "0.0.0.0", 
+            port  => $port // 0, 
         });
         return;
     }

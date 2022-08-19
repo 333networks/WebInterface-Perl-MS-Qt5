@@ -1,4 +1,8 @@
 Changelog:
+    
+19-08-2022: untighten parameter checks
+    * serverinfo search can also happen without ip/port check
+
 
 07-08-2022: fixes in Json API
     * update manual to reflect use of JSON instead of JSON::XS
