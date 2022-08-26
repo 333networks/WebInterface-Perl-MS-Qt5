@@ -6,8 +6,8 @@ use TUWF ':html';
 use Exporter 'import';
 
 TUWF::register(
-    qr{g}        => \&gamelist,
-    qr{g(|/all)} => \&gamelist,
+    qr{g}       => \&gamelist,
+    qr{g/all}   => \&gamelist,
 );
 
 #
@@ -35,11 +35,10 @@ sub gamelist
         search  => $f->{q},
         results => $f->{r},
         all     => $all,
-        
     );
 
     $self->htmlHeader(title => "Browse Games");
-    $self->htmlSearchBox(title => "Games", action => "/g/all", sel => 'g', fq => $f->{q});
+    $self->htmlFilterBox(title => "Games", action => "/g/all", sel => 'g', fq => $f->{q});
     
     #
     # game list
@@ -100,7 +99,7 @@ sub gamelist
                 
                 # number of beacons / servers
                 td title => ($l->{num_direct} // 0) . " / " . ($l->{num_total} // 0), 
-                $l->{num_direct} // 0;
+                $l->{num_total} // 0;
             end;
         },
     );

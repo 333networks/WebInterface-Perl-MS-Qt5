@@ -11,19 +11,23 @@ sub dbServerListGet {
   my $s = shift;
   my %o = ( page => 1, 
             results => 50, 
-            gamename => "all", 
             @_ 
   );
     
   my %where = (
     # gamename and char are "all" or value
-    $o{updated}           ? ('dt_updated > ?'                => (time-$o{updated})) : (),
-    $o{gamename} !~ /all/ ? ('serverlist.gamename = ?'       => $o{gamename})       : (),
-    $o{nolist}            ? ('serverlist.gamename <> ?'      => $o{nolist})         : (),
-    $o{search}            ? ('LOWER(hostname) LIKE LOWER(?)' => "%$o{search}%")     : (),
-    $o{gametype}          ? ('LOWER(gametype) LIKE LOWER(?)' => lc $o{gametype})    : (),
-    $o{popserv}           ? ('numplayers > ?'                => 0)                  : (),
-    $o{utdemo}            ? ('gamever = ?'                   => '348')              : (),
+    $o{updated}  ? ('dt_updated > ?'                => (time-$o{updated})) : (),
+    $o{gamename} ? ('serverlist.gamename = ?'       => $o{gamename})       : (),
+    $o{nolist}   ? ('serverlist.gamename <> ?'      => $o{nolist})         : (),
+    $o{search}   ? ('LOWER(hostname) LIKE LOWER(?)' => "%$o{search}%")     : (),
+    $o{popserv}  ? ('numplayers > ?'                => 0)                  : (),
+    $o{utdemo}   ? ('gamever = ?'                   => '348')              : (),
+    
+    #advanced search
+    $o{hostname} ? ('LOWER(hostname) LIKE LOWER(?)' => "%$o{hostname}%")     : (),
+    $o{gametype} ? ('LOWER(gametype) LIKE LOWER(?)' => $o{gametype})         : (),
+    $o{mapname}  ? ('(LOWER(mapname) LIKE LOWER(?) OR LOWER(maptitle) LIKE LOWER(?))' => ["%$o{mapname}%", "%$o{mapname}%"]) : (),
+    $o{country}  ? ('country         LIKE UPPER(?)' => $o{country})        : (),
     
     # sanity check for unresponsive servers or faulty queries tools, except ST:Bcommander which /is/ faulty by default
     $o{gamename} !~ /bcommander/ ? ('hostport > ?' => 0) : (),

@@ -9,7 +9,7 @@ TUWF::set(
 );
 
 TUWF::register(
-    qr{500} => sub {die "Process died on purpose, but with a lot of text to test if the whole error is correctly displayed on the screen when debug information is enabled in the website configuration, "},
+    qr{500} => sub {die "Process died on purpose, but with a lot of text to test if the whole error is correctly displayed on the screen when debug information is enabled in the website configuration. "},
 );
 
 #
@@ -32,7 +32,7 @@ sub handle404
     
     $self->resStatus(404);
     $self->htmlHeader(title => '404 - Not Found');
-    $self->htmlSearchBox(title => "Servers", action => "/s", sel => 's', fq => '');
+    $self->htmlFilterBox(title => "Servers", action => "/s", sel => 's', fq => '');
     
     div class => "mainbox warning";
         div class => "header";
@@ -72,7 +72,7 @@ sub handle500
     
     $self->resStatus(500);
     $self->htmlHeader(title => '500 - Internal Server Error');
-    $self->htmlSearchBox(title => "Servers", action => "/s", sel => 's', fq => '');
+    $self->htmlFilterBox(title => "Servers", action => "/s", sel => 's', fq => '');
     
     div class => "mainbox warning";
         div class => "header";

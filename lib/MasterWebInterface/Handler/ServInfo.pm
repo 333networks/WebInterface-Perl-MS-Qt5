@@ -45,8 +45,12 @@ sub show_server
         
         # otherwise not found in database, soft error page (no 404 status)
         $self->htmlHeader(title => 'Server not found');
-        $self->htmlSearchBox(title => "Servers", action => "/s", sel => 's', fq => '');
-        
+        $self->htmlFilterBox(
+            sel => 's', 
+            fq => '', 
+            ($gamename ? (gamename => $gamename) : () ),
+        );
+
         div class => "mainbox warning";
             div class => "header";
                 h1 'Server not found';
@@ -83,11 +87,10 @@ sub show_server
     #
     # generate info page
     $self->htmlHeader(title => $info->{hostname} // "Server");
-    $self->htmlSearchBox(
-        title => "$gamedescription Servers", 
-        action => "/s/$gamename", 
+    $self->htmlFilterBox(
+        gamename => $gamename,
         sel => 's', 
-        fq => ''
+        fq => '',
     );
     
     # serverinfo box

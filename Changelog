@@ -1,8 +1,13 @@
 Changelog:
+
+26-08-2022: advanced filtering
+    * new advanced filter box and functionality
+    * updated additional styles to accommodate advanced filter
+    * remove debug top bar override
+    * remove debug style override
     
 19-08-2022: untighten parameter checks
     * serverinfo search can also happen without ip/port check
-
 
 07-08-2022: fixes in Json API
     * update manual to reflect use of JSON instead of JSON::XS

@@ -5,49 +5,7 @@ use utf8;
 use TUWF ':html', 'xml_escape';
 use Exporter 'import';
 use POSIX 'ceil';
-our @EXPORT = qw| htmlSearchBox htmlBrowse htmlBrowseNavigate |;
-
-# generates a search box, arguments:
-# title  => games/ (game) servers
-# action => form action
-# sel    => g or s selected
-# fq     => form query string
-sub htmlSearchBox
-{
-    my($self, %opt) = @_;
-    
-    div class => 'mainbox';
-        div class => "header";
-            h1 "Browse $opt{title}";
-            p class => "alttitle", "An overview of games titles and servers that are currently online.";
-        end;
-        
-        # search box
-        form action => $opt{action}, 'accept-charset' => 'UTF-8', method => 'get';
-            fieldset class => 'search';
-                a href => '/g',    $opt{sel} eq 'g' ? (class => 'sel') : (), 'Games';
-                a href => '/s',    $opt{sel} eq 's' ? (class => 'sel') : (), 'Servers';
-                input type => 'text', name => 'q', id => 'q', class => 'text', 
-                    value => $opt{fq} || 'search...';
-                input type => 'submit', class => 'submit', value => 'submit';
-            end 'fieldset';
-            
-            div class => "dropdown";
-                a href => "#", onclick => "toggleAdvanced()";
-                    txt "advanced search ";
-                    lit "\x{25BE}";
-                end;
-            end;
-            
-            fieldset id => 'advancedsearch';
-                #input type => 'text', name => 'aq', class => 'text', value => '';
-                #input type => 'submit', class => 'submit', value => 'submit';
-                txt "Patience, young one. With time, advanced search options will become available to you.";
-            end;
-        end;
-        
-    end 'div'; # mainbox
-}
+our @EXPORT = qw| htmlBrowse htmlBrowseNavigate |;
 
 # generates a browse box, arguments:
 #  items    => arrayref with the list items

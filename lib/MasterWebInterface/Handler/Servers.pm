@@ -5,9 +5,9 @@ use TUWF ':html';
 use Exporter 'import';
 
 TUWF::register(
-    qr{}                => \&serverlist,
-    qr{s}               => \&serverlist,
-    qr{s/([\w]{1,20})}  => \&serverlist,
+    qr{}                     => \&serverlist,
+    qr{(s|adv)}              => \&serverlist,
+    qr{(s|adv)/([\w]{0,20})} => \&serverlist,
 );
 
 #
@@ -15,60 +15,91 @@ TUWF::register(
 #
 sub serverlist 
 {
-    my($self, $gamename) = @_;
-    $gamename = "all" unless $gamename;
+    my($self, $adv, $gamename) = @_;
     
     # sorting, page
     my $f = $self->formValidate(
         {   get => 's', required => 0, default => 'gamename',enum => [ qw| hostname gamename country dt_added gametype numplayers mapname | ] },
         {   get => 'o', required => 0, default => 'a',enum      => [ 'a','d' ] },
         {   get => 'p', required => 0, default => 1,  template  => 'page',},
-        {   get => 'r', required => 0, default => 50, template  => 'page' },
         {   get => 'q', required => 0, default => '', maxlength => 90 },
-        {   get => 'g', required => 0, default => '', maxlength => 90 },
+        
+        # advanced search
+        {   get => 'gamename', required => 0, default => '',  maxlength => 90 }, # gamename in advanced search
+        {   get => 'gametype', required => 0, default => '',  maxlength => 90 }, # gametype
+        {   get => 'hostname', required => 0, default => '',  maxlength => 90 }, # hostname (replaces q in advanced search)
+        {   get => 'mapname',  required => 0, default => '',  maxlength => 90 }, # mapname
+        {   get => 'country',  required => 0, default => '',  maxlength => 90 }, # country (code)
     );
     return $self->resNotFound if $f->{_err};
     
-    # load server list from database
+    # set correct gamename (form always overwrites url)
+    $gamename = ( $f->{gamename} ? $f->{gamename} : $gamename);
+    
+    # load server list from database FIXME order of list, duplicates
     my ( $list, $np, $p ) = $self->dbServerListGet(
         sort => $f->{s}, 
         reverse  => $f->{o} eq 'd',
-        gamename => $gamename,
         search   => $f->{q},
         page     => $f->{p},
+        results  => 50,
         updated  => $self->{window_time},
-        results  => $f->{r},
-        gametype => $f->{g},
-        # don't show 333networks in default list
-        $gamename ne "333networks" ? ( nolist => "333networks") : (), 
+        gamename => $gamename,
+        gametype => $f->{gametype},
+        hostname => $f->{hostname},
+        mapname  => $f->{mapname},
+        country  => $f->{country},
+
+        # don't show 333networks in default list, but show in advanced search by default
+        !($gamename eq "333networks" or $f->{gamename} eq "333networks") ? ( nolist => "333networks") : (), 
     );
-    
-    # game name description in title
-    my $gn_desc = $self->dbGetGameDesc($gamename) // $gamename;
     
     # Write page  
-    $self->htmlHeader(title => "Browse $gn_desc game servers");
-    $self->htmlSearchBox(
-        title => "$gn_desc Servers", 
-        action => "/s/$gamename", 
-        sel => 's', 
-        fq => $f->{q}
-    );
-
+    $self->htmlHeader(title => "Servers");
+    
+    # search box type: simple or advanced
+    if ($adv eq 'adv')
+    {
+        # advanced filter box with additional search fields
+        $self->htmlAdvancedFilterBox(
+            sel => 's', 
+            %{$f}, # previous parameters
+            gamename => $gamename,
+        );
+    }
+    else # $adv eq "adv"
+    {
+        # simple search box
+        $self->htmlFilterBox(
+            sel => 's', 
+            ($gamename ? (gamename => $gamename) : () ),
+            action => "/s/$gamename", 
+            fq => $f->{q},
+        );
+    }
+    
+    # construct page URLs
+    my $pageurl = "/$adv/$gamename?"
+                . ( $adv eq "adv" ? "gamename=$f->{gamename}&gametype=$f->{gametype}&hostname=$f->{hostname}&mapname=$f->{mapname}&country=$f->{country}&o=$f->{o};s=$f->{s}" : "")
+                . ( $adv eq "s"   ? "o=$f->{o};s=$f->{s};q=$f->{q}" : "");
+    my $sorturl = "/$adv/$gamename?"
+                . ( $adv eq "adv" ? "gamename=$f->{gamename}&gametype=$f->{gametype}&hostname=$f->{hostname}&mapname=$f->{mapname}&country=$f->{country}" : "")
+                . ( $adv eq "s"   ? "q=$f->{q}" : "");
+    
     #
     # server list
     $self->htmlBrowse(
         items    => $list,
         options  => $f,
         total    => $p,
-        nextpage => [$p,$f->{r}],
-        pageurl  => "/s/$gamename?o=$f->{o};s=$f->{s};q=$f->{q}",
-        sorturl  => "/s/$gamename?q=$f->{q}",
+        nextpage => [$p,50],
+        pageurl  => $pageurl, #"/$adv/$gamename?o=$f->{o};s=$f->{s};q=$f->{q}",
+        sorturl  => $sorturl, #"/$adv/$gamename?q=$f->{q}",
         class    => "serverlist",
         ($p <= 0) ? (footer => sub 
             {
                 Tr;
-                    td colspan => 6, class => 'tc2', 'No online servers found';
+                    td colspan => 6, class => 'tc2', 'No online servers found.';
                 end 'tr';
             }) : (),
         header   => [
@@ -86,6 +117,7 @@ sub serverlist
             Tr $n % 2 ? (class => 's odd') : (class => 's');
             
                 # country flag
+                # TODO: advanced filter by country only
                 my ($flag, $country) = $self->countryflag($l->{country});
                 td class => "tc1", 
                    style => "background-image: url(/flag/$flag.svg);", 
@@ -108,7 +140,7 @@ sub serverlist
                     td class => "tc3 icon",
                        style => "background-image: url(/icon32/$gn.png);", 
                        title => $l->{label};
-                        a href => "/s/$gn", "";
+                        a href => "/$adv/$gn", "";
                     end;
                 }
                 else
@@ -117,6 +149,7 @@ sub serverlist
                 }
                 
                 # game type (hover: raw, display: parsed)
+                # TODO: advanced filter by gametype only
                 td class => "tc4",
                     title => $l->{gametype}, 
                     $self->better_gametype($l->{gametype});

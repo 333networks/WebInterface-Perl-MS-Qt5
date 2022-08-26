@@ -6,20 +6,12 @@
 // 333networks.com for license and copyright.
 //
 //==============================================================================
-
-// advanced search box
-function toggleAdvanced ()
-{
-    var box = document.getElementById("advancedsearch");
-    box.style.display = (box.style.display == "block" ? "none" : "block" );
-}
-
 // search box
 {
     var qbox = document.getElementById('q');
     qbox.onclick = function ()
     {
-        if ( this.value == 'search...' ) 
+        if ( this.value == 'filter...' ) 
         {
             this.value = '';
             this.style.fontStyle = 'normal'
@@ -30,7 +22,7 @@ function toggleAdvanced ()
     {
         if ( this.value.length < 1 ) 
         {
-            this.value = 'search...';
+            this.value = 'filter...';
             this.style.fontStyle = 'italic';
         }
     };
