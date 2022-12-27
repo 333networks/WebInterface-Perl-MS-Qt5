@@ -8,7 +8,7 @@ RUN apt-get update \
       libimage-size-perl \
       libanyevent-perl \
       libio-all-lwp-perl \
-    	libfcgi-perl \
+      libfcgi-perl \
       libgeography-countries-perl \
       libapache2-mod-fcgid \
     && cpan TUWF \
@@ -37,32 +37,33 @@ RUN echo 'Listen 8080\n\
         AllowOverride None\n\
         Require all granted\n\
     </Directory>\n\
-    </VirtualHost>' > /etc/apache2/sites-available/000-default.conf
+    </VirtualHost>' > /etc/apache2/sites-available/000-default.conf \
+    && echo "" > /etc/apache2/ports.conf
 
 # Create FastFGI configuration which works with our stand-alone Apache instance
 RUN echo '<IfModule mod_fcgid.c>\n\
-		FcgidIPCDir                /run/mod_fcgid\n\
-		FcgidProcessTableFile      /run/mod_fcgid/fcgid_shm\n\
-		FcgidMinProcessesPerClass  0\n\
-		FcgidMaxProcessesPerClass  8\n\
-		FcgidMaxProcesses          100\n\
+    FcgidIPCDir                /run/mod_fcgid\n\
+    FcgidProcessTableFile      /run/mod_fcgid/fcgid_shm\n\
+    FcgidMinProcessesPerClass  0\n\
+    FcgidMaxProcessesPerClass  8\n\
+    FcgidMaxProcesses          100\n\
     FcgidConnectTimeout 			 20\n\
-		FcgidIdleTimeout           60\n\
-		FcgidProcessLifeTime       120\n\
-		FcgidIdleScanInterval      10\n\
-		\
-		<IfModule mod_mime.c>\n\
-			AddHandler fcgid-script .fcgi\n\
-		</IfModule>\n\
-		</IfModule>' > /etc/apache2/mods-enabled/fcgid.conf
+    FcgidIdleTimeout           60\n\
+    FcgidProcessLifeTime       120\n\
+    FcgidIdleScanInterval      10\n\
+    \
+    <IfModule mod_mime.c>\n\
+      AddHandler fcgid-script .fcgi\n\
+    </IfModule>\n\
+    </IfModule>' > /etc/apache2/mods-enabled/fcgid.conf
 
 # Create a script which runns the IP to Country lookup in the background, and runs Apache in the foreground
 RUN echo '#!/bin/sh\n\
     if [ ! $NO_IP_TO_COUNTRY ]; then\n\
-    	echo "Running IP to Country lookup"\n\
-    	cd /masterserver/util && ./listcountry.pl > /masterserver/log/listcountry.log &\n\
+      echo "Running IP to Country lookup"\n\
+      cd /masterserver/util && ./listcountry.pl > /masterserver/log/listcountry.log &\n\
     else\n\
-			echo "Not using IP to Country lookup"\n\
+      echo "Not using IP to Country lookup"\n\
     fi\n\
     cd /masterserver && apache2 -DFOREGROUND' > /masterserver/launch.sh
 
