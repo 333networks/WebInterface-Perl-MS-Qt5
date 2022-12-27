@@ -1,0 +1,679 @@
+/* * * * * * * * * * * * * * * * * * *\
+*  Master Server Web Interface        *
+*  A website by Darkelarious          *
+*  See COPYING for additional details *
+*  on re-use.                         *
+\* * * * * * * * * * * * * * * * * * */
+
+/* Theme written by Shrimp */
+
+/*** Global ***/
+* {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+
+}
+
+body {
+	text-align: center;
+	height: 100%;
+	color: #000;
+	font-family: sans-serif;
+	font-size: 1em;
+	background: #fff url(/style/unrealarchive/top.png) repeat-x top;
+}
+
+p {
+	margin-bottom: 12pt;
+}
+
+a, a:visited {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: none;
+}
+
+#body {
+	text-align: left;
+	width: 1000px;
+	margin: 0 auto;
+	min-height: 100%;
+	background: url(/style/unrealarchive/unrealarchive.png) no-repeat;
+	padding-top: 75px;
+}
+
+#footer {
+	padding: 90px 0 40px 0;
+	text-align: center;
+	font-size: x-small;
+	clear: both
+}
+
+#footer a {
+	text-decoration: underline;
+}
+
+
+/* mainboxes */
+div.mainbox {
+	margin: 21px 0 -10px 0;
+	padding: 5px;
+	background: #eaefff;
+}
+
+div.mainbox h1,
+div.mainbox h2,
+div.mainbox h3 {
+	margin: -5px 0 10px 0;
+	text-decoration: none;
+	font-size: 1.2em;
+}
+
+div.mainbox h2 {
+	margin: 5px 0 5px 5px;
+	font-size: 12pt;
+}
+
+div.mainbox h3 {
+	margin: 5px 0 5px 10px;
+	font-size: 11pt;
+}
+
+div.mainbox p,
+div.mainbox ul,
+div.mainbox ol {
+	margin: 5px 16px 0 8px;
+	padding: 0 5px 5px 25px;
+	text-align: left;
+	font-size: 9pt;
+}
+
+div.mainbox ul,
+div.mainbox ol {
+	margin-left: 20px;
+}
+
+
+div.mainbox div.header {
+	margin: -5px 2px 10px -5px;
+	padding: 10px 0 0 10px;
+	display: block;
+	width: 100%;
+	color: white;
+	background: #2277ff;
+	border-radius: 4px 4px 0 0;
+}
+
+/* navigation / filter box */
+
+form input,
+form select {
+	height: 35px;
+	vertical-align: middle;
+	border: 1px solid black;
+}
+
+form input:disabled,
+form select:disabled {
+}
+
+form fieldset {
+	display: block;
+	margin: 12px 0 12px 0;
+	width: 100%;
+	text-align: center;
+}
+
+form fieldset.simple {
+}
+
+form fieldset input.text {
+	width: 300px;
+	margin-left: 20px;
+	padding: 1px 1px 1px 5px;
+	font-style: italic;
+}
+
+form fieldset.simple input.submit {
+	display: none;
+}
+
+form fieldset a {
+	padding: 1px 5px;
+	margin: 0 6px;
+	font-weight: bold;
+	font-size: 1.1em;
+}
+
+form fieldset a.sel,
+form fieldset a:hover {
+	border-bottom: 3px solid #e45;
+	background: #ffddee;
+}
+
+form.advancedfilter table {
+	table-layout: fixed;
+	border-collapse: collapse;
+	margin: 12pt auto;
+	text-align: right;
+}
+
+form.advancedfilter table tr {
+}
+
+
+form.advancedfilter table tr td {
+	margin: 3pt;
+	text-align: right;
+	padding: 7px;
+}
+
+form.advancedfilter table tr td.desc {
+	width: 100px;
+	text-align: left;
+}
+
+form.advancedfilter table tr td.param {
+	width: 400px;
+	text-align: right;
+}
+
+form.advancedfilter input.submit,
+form.advancedfilter input.text,
+form.advancedfilter select {
+	padding: 2px;
+	margin: auto 5px;
+	width: 400px
+}
+
+form.advancedfilter input.text {
+	width: 394px
+}
+
+form.advancedfilter input.submit {
+	font-weight: bold;
+}
+
+form.advancedfilter span.errorsel {
+	font-size: x-small;
+	color: #f55;
+	padding-left: 5px;
+}
+
+div.simpleadvanced a {
+	display: block;
+	width: 100%;
+	text-align: center;
+	font-size: x-small;
+}
+
+/* DEBUG code block */
+div.mainbox .codeblock {
+	font-family: monospace;
+	font-size: 0.9em;
+	text-align: left;
+	background: #222;
+	border: 1px solid #666;
+	display: block;
+	margin: 12pt auto;
+	width: 90%;
+	padding: 7px;
+	overflow-x: auto;
+	box-shadow: 3px 3px 2px #222;
+}
+
+/* browse table tabs */
+ul.maintabs {
+	display: inline;
+	margin: 0;
+}
+
+ul.maintabs.notfirst {
+	display: block;
+	height: 20px
+}
+
+ul.maintabs li {
+	display: inline;
+	list-style-type: none;
+}
+
+ul.maintabs li a,
+ul.maintabs li b {
+	float: right;
+	display: block;
+	height: 14px;
+	padding: 1px 7px 5px 7px;
+	margin: 0 0 0 10px;
+}
+
+ul.maintabs li a {
+	margin-left: 5px;
+	border: 0.5px solid #2277ff;
+}
+
+ul.maintabs.notfirst li a,
+ul.maintabs.notfirst li b {
+	margin-top: 20px
+}
+
+ul.maintabs.bottom li a,
+ul.maintabs.bottom li b {
+	margin-top: 10px;
+	padding: 1px 7px 5px 7px
+}
+
+ul.maintabs.bottom li a {
+}
+
+ul.maintabs li.left a,
+ul.maintabs li.left b {
+	float: left;
+	margin-left: 0;
+	margin-right: 10px
+}
+
+ul.maintabs li b {
+	margin-left: -2px;
+	margin-right: -7px
+}
+
+ul.maintabs li.left b {
+	margin-left: -7px;
+	margin-right: -2px
+}
+
+ul.maintabs li.tabselected a,
+ul.maintabs li a:hover {
+	background: #ee4455;
+}
+
+ul.maintabs.bottom li.tabselected a,
+ul.maintabs.bottom li a:hover {
+}
+
+ul.maintabs.browsetabs li a {
+	margin-left: 5px;
+}
+
+ul.maintabs.browsetabs li.left a {
+	margin-left: 0;
+	margin-right: 5px
+}
+
+
+/* game/server browse tables */
+div.mainbox.browse {
+	padding: 0;
+}
+
+div.mainbox.browse table {
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse
+}
+
+div.mainbox.browse table thead td {
+	font-weight: bold;
+}
+
+div.mainbox.browse table thead tr td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-align: center;
+	border-top: 0;
+	border-bottom: 1px solid #000;
+	padding: 3px 10px 3px 5px;
+	font-weight: bold;
+	font-variant: small-caps;
+}
+
+div.mainbox.browse table tfoot tr td {
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 3px 10px 3px 5px;
+}
+
+div.mainbox.browse table tr td {
+	white-space: nowrap;
+	overflow: hidden;
+	text-align: center;
+	padding: 1px 10px 1px 5px;
+	font-size: 10pt;
+}
+
+div.mainbox.browse table tr.s td a {
+}
+
+div.mainbox.browse table tr.s td {
+	padding: 5px;
+}
+
+div.mainbox.browse table tr.s:hover {
+	background: #ccccff;
+}
+
+div.mainbox.browse table tr.odd {
+	background: #e2e9ff;
+}
+
+/* specific game list table columns */
+div.mainbox.browse.gamelist table tr td.tc1 {
+	text-align: left;
+	padding-left: 20px
+}
+
+div.mainbox.browse.gamelist table tr td.tc2 {
+	width: 100px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 16px 16px;
+}
+
+div.mainbox.browse.gamelist table tr td.tc3 {
+	width: 200px;
+}
+
+/* specific serverlist table columns */
+div.mainbox.browse.serverlist table tr td.tc1 {
+	width: 10px;
+	background-size: 20px 15px;
+	background-position: 50%;
+	background-repeat: no-repeat;
+}
+
+div.mainbox.browse.serverlist table tr td.tc2 {
+	text-align: left;
+}
+
+div.mainbox.browse.serverlist table tr td.tc3 {
+	width: 46px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 16px 16px;
+}
+
+div.mainbox.browse.serverlist table tr td.tc3.icon a {
+	display: block;
+	margin: 0 auto;
+	height: 16px;
+	width: 16px;
+}
+
+div.mainbox.browse.serverlist table tr td.tc4 {
+	width: 110px;
+	text-align: left
+}
+
+div.mainbox.browse.serverlist table tr td.tc5 {
+	width: 60px;
+	text-align: center
+}
+
+div.mainbox.browse.serverlist table tr td.tc6 {
+	width: 150px;
+	text-align: left
+}
+
+
+/* serverinfo details */
+div.mainbox.detail {
+	padding: 0 0 12px 0;
+}
+
+div.mainbox.detail div.header {
+	margin: 0 0 12pt 0;
+	padding: 0;
+	display: inline-block;
+	width: 100%;
+	height: 48px;
+}
+
+div.mainbox.detail div.header h1 {
+	font-weight: normal;
+	padding: 15px 15px 0 15px;
+	white-space: nowrap;
+	overflow: hidden;
+	display: block;
+}
+
+div.mainbox.detail div.header div.serverflags {
+	float: right;
+	overflow: hidden;
+}
+
+div.mainbox.detail div.header div.serverflags div.r,
+div.mainbox.detail div.header div.serverflags div.g {
+	background: #ee4455;
+	display: inline-block;
+	margin-left: 2px;
+}
+
+div.mainbox.detail div.header div.serverflags div.g {
+	background: #22ddaa;
+}
+
+/* server flag icons */
+div.mainbox.detail div.header div.serverflags div div.direct {
+	background-image: url(/serverflags/direct.png);
+}
+
+div.mainbox.detail div.header div.serverflags div div.manual {
+	background-image: url(/serverflags/manual.png);
+}
+
+div.mainbox.detail div.header div.serverflags div div.authed {
+	background-image: url(/serverflags/authed.png);
+}
+
+div.mainbox.detail div.header div.serverflags div div.noauthed {
+	background-image: url(/serverflags/noauthed.png);
+}
+
+div.mainbox.detail div.header div.serverflags div div.noblacklist {
+	background-image: url(/serverflags/noblacklist.png);
+}
+
+div.mainbox.detail div.header div.serverflags div div.blacklist {
+	background-image: url(/serverflags/blacklist.png);
+}
+
+div.mainbox.detail div.header div.serverflags div div.nopasswd {
+	background-image: url(/serverflags/nopasswd.png);
+}
+
+div.mainbox.detail div.header div.serverflags div div.passwd {
+	background-image: url(/serverflags/passwd.png);
+}
+
+div.mainbox.detail div.header div.serverflags div div {
+	width: 48px;
+	height: 48px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-size: 40px 40px;
+}
+
+div.mainbox.detail table {
+	margin-bottom: 20px;
+	table-layout: fixed;
+	border-collapse: collapse;
+	text-align: left;
+}
+
+div.mainbox.detail table tr th {
+	font-weight: bold;
+	padding: 2px 8px;
+	margin-bottom: 12pt;
+	color: #fff;
+	background: #a7f;
+}
+
+div.mainbox.detail table tr th.wc1 {
+	width: 170px
+}
+
+div.mainbox.detail table tr td {
+	vertical-align: top;
+	padding: 6px 5px 4px 15px;
+}
+
+div.mainbox.detail table tr td img.flag {
+	margin: -4px 2px -4px 0;
+	height: 20px;
+	width: 30px;
+}
+
+div.mainbox.detail table tr td input,
+div.mainbox.detail table tr td textarea {
+	color: #ccc;
+	width: 99%;
+	padding: 3px 1px 2px 5px;
+	border: 1px solid #0af;
+	font-family: monospace;
+	font-size: 8pt;
+	background: #222;
+}
+
+div.mainbox.detail table.serverinfo,
+div.mainbox.detail table.gameinfo {
+	width: 63%;
+}
+
+div.mainbox.detail table {
+	width: 96%;
+}
+
+div.mainbox.detail div.container {
+	float: right;
+	margin: 0 30px 8px 0;
+}
+
+div.mainbox.detail div.container div.thumbnail {
+	display: block;
+}
+
+div.mainbox.detail div.container div.thumbnail img {
+	height: 256px;
+	width: 256px;
+	display: block;
+	margin: 10px 10px 2px 10px;
+	border-radius: 4px;
+}
+
+div.mainbox.detail div.container div.thumbnail span {
+	text-align: right;
+	font-weight: normal;
+	padding: 0 15px 4px 5px;
+	display: block;
+	font-size: x-small
+}
+
+div.mainbox.detail div.container div.updatenote {
+	padding: 2px 10px 7px 0;
+	display: block;
+	font-style: italic;
+	font-size: x-small;
+	text-align: right;
+}
+
+div.mainbox.detail div.container table.mapinfo {
+	width: 280px;
+	margin-bottom: 0;
+}
+
+div.mainbox.detail div.container table.mapinfo tr td.wc1 {
+	width: 80px;
+}
+
+div.mainbox.detail table.players {
+	text-align: left;
+}
+
+div.mainbox.detail table.players tr.odd {
+	background: #e2e9ff;
+}
+
+div.mainbox.detail table.players tr td {
+	padding: 1px 5px 0px 15px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+div.mainbox.detail table.players tr th.frags {
+	width: 50px
+}
+
+div.mainbox.detail table.players tr th.mesh {
+	width: 140px
+}
+
+div.mainbox.detail table.players tr th.skin {
+	width: 140px
+}
+
+div.mainbox.detail table.players tr th.ping {
+	width: 50px
+}
+
+div.mainbox.detail table.shareopts tr th a {
+	color: #fff;
+}
+
+div.mainbox.detail table.shareopts tr td {
+	font-family: monospace;
+	text-align: left;
+}
+
+/* warning box */
+div.mainbox.warning {
+	color: #ccc;
+	background-color: #411;
+	border: 1px solid #c00;
+}
+
+div.mainbox.warning div.header {
+	border-bottom: 1px solid #c00;
+	background: #200;
+	color: #ccc;
+}
+
+div.mainbox.warning div.header h1 {
+	color: #ccc;
+}
+
+div.mainbox div.description {
+	display: block;
+	width: 500px;
+	margin: 10px auto
+}
+
+span.hilit {
+	font-style: italic;
+	padding: 1px;
+	background: #111;
+}
+
+.r {
+	color: #ee4455;
+}
+
+.o {
+	color: #c80
+}
+
+.y {
+	color: #ff3
+}
+
+.g {
+	color: #22ddaa;
+}
+
+.b {
+	color: #33f
+}
