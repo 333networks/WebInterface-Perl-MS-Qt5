@@ -2,7 +2,7 @@
 Web interface in Perl for MasterServer-Qt5.
 
 ## DESCRIPTION
-This repository contains software for a web interface to display information obtained by the 333networks MasterServer for the support of various legacy games. 
+This repository contains software for a web interface to display information obtained by the 333networks MasterServer for the support of various legacy Gamespy games. 
 
 ## AUTHOR
 * Darkelarious
