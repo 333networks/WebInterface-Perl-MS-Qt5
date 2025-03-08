@@ -19,7 +19,7 @@ use Data::Dumper 'Dumper';
 # TODO: allow searching by IP, in combination with expired servers (and sanity check in javascript?)
 sub htmlAdvancedFilterBox 
 {
-    my($self, %opt) = @_;
+    my ($self, %opt) = @_;
     
     div class => 'mainbox';
         div class => "header";
@@ -31,6 +31,16 @@ sub htmlAdvancedFilterBox
                 txt ".";
             end;
         end;
+        
+        if (0)
+        {
+        div class => "codeblock";
+            p "No worries, Darkelarious is debugging an issue right now. Please ignore this code block.";
+            pre;
+                txt Dumper \%opt;
+            end;
+        end;
+        }
 
         # advanced filter form        
         form action => "/adv", 'accept-charset' => 'UTF-8', method => 'get', class => "advancedfilter";
@@ -181,17 +191,6 @@ sub htmlAdvancedFilterBox
                 
             end 'fieldset';
         end; # form
-        
-        # debugging box
-        if ( 0 )
-        {
-            h2 "Debug information";        
-            div class => "codeblock";
-                pre;
-                    txt Dumper \%opt;
-                end;
-            end;
-        }
         
         # return to simple filter/layout
         div class => "simpleadvanced";

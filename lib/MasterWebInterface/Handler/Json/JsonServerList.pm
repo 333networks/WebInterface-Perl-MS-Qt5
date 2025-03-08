@@ -21,10 +21,16 @@ sub serverlist_json
         {   get => 's', required => 0, default => 'gamename', enum => [qw|hostname gamename country added gametype numplayers mapname|] },
         {   get => 'o', required => 0, default => 'a', enum      => ['a','d']    },
         {   get => 'p', required => 0, default => 1,   template  => 'page'   },
-        {   get => 'r', required => 0, default => 100, template  => 'page'   },
+        {   get => 'r', required => 0, default => 50,  template  => 'page'   },
         {   get => 'q', required => 0, default => '',  maxlength => 90      },
         {   get => 'g', required => 0, default => '',  maxlength => 90      },
         {   get => 'a', required => 0, default => '',  maxlength => 200     },
+        
+        #{   get => 'gamename', required => 0, default => '',  maxlength => 90 }, # gamename in advanced search
+        {   get => 'gametype', required => 0, default => '',  maxlength => 90 }, # gametype
+        {   get => 'hostname', required => 0, default => '',  maxlength => 90 }, # hostname (replaces q in advanced search)
+        {   get => 'mapname',  required => 0, default => '',  maxlength => 90 }, # mapname
+        {   get => 'country',  required => 0, default => '',  maxlength => 90 }, # country (code)
     );
     
     # allow all outside sources to access the json api
@@ -56,13 +62,20 @@ sub serverlist_json
         # parse extra request parameters for ubrowser.333networks.com
         ($f->{a} =~ m/popserv/ig) ? (popserv => 1) : (),
         ($f->{a} =~ m/utdemo/ig)  ? (utdemo  => 1) : (),
+        
+        gametype => $f->{gametype},
+        hostname => $f->{hostname},
+        mapname  => $f->{mapname},
+        country  => $f->{country},  
     );
     
     # get total number of players in selected page(s)
     my $pl = 0;
     for (@{$list}) 
     {
-        $pl += $_->{numplayers}
+        $pl += $_->{numplayers};
+        s/</&lt;/g for values %{$_};
+        s/>/&gt;/g for values %{$_};
     }
     
     # response as json data

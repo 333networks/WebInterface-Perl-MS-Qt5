@@ -18,9 +18,18 @@ sub htmlHeader
             title "$o{title} :: $self->{site_name} masterserver";
             Link type => 'image/x-icon', rel => 'shortcut icon', href => "/favicon.ico";
             Link type => "text/css", rel => 'stylesheet', href => "/style/$self->{style}/style.css", media => "all";
+            
+            # metadata for previews
+            meta property => "theme-color",    content => ($self->{meta_color} // "#111111");
+            meta property => "og:type",        content => "website";
+            meta property => "og:site_name",   content => $self->{site_name};
+            meta property => "og:title",       content => substr($o{title},0,50);
+            meta property => "og:description", content => ($o{meta_desc} // "");
+            meta property => "og:image",       content => ($o{meta_img } // "/map/default/333networks.jpg");
+            
             if ( $o{noindex} )
             {
-                meta name => 'robots', content => 'noindex,nofollow,nosnippet,noodp,noarchive,noimageindex';end;
+                meta name => 'robots', content => 'noindex,nofollow,nosnippet,noodp,noarchive,noimageindex';
             }
         end 'head';
         

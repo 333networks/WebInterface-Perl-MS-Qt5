@@ -2,6 +2,7 @@ package MasterWebInterface::Handler::ServInfo;
 use strict;
 use warnings;
 use utf8;
+use Socket;
 use TUWF ':html';
 use POSIX 'strftime';
 use Exporter 'import';
@@ -9,15 +10,25 @@ use Exporter 'import';
 TUWF::register(
     qr{([\w]{1,20})/(\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}:\w{4}):(\d{1,5})} => \&show_server, #ipv6
     qr{([\w]{1,20})/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})}              => \&show_server, #ipv4
+    qr{([\w]{1,20})/([\w\.]{3,63}):(\d{1,5})}                                         => \&show_server, #domain name
 );
-
+ 
 #
 # Display server information
 #
 ################################################################################
 sub show_server
 {
-    my ($self, $gamename, $ip, $port) = @_;
+    my ($self, $gamename, $addr, $port) = @_;
+    
+    # domain name check
+    my $ip = $addr;
+    if ($addr =~ m/[a-z]/ig )
+    {
+        # $addr holds a value that is a domain. try to resolve.
+        my $packed_ip = gethostbyname($ip);
+        $ip = inet_ntoa($packed_ip) if (defined $packed_ip);
+    }
     
     # select server from database
     my $info = $self->dbGetServerInfo(
@@ -43,8 +54,13 @@ sub show_server
             return;
         }
         
+        # meta data
+        my $img = (-e "$self->{root}/s/map/default/$gamename.jpg") 
+            ? "/map/default/$gamename.jpg" : "/map/default/333networks.jpg";
+        my $desc = "It seems the server you were looking for does not exist in our database, perhaps our search function may yield results? You tried to access ".($ip // "[no ip]")." in $gamename.";
+        
         # otherwise not found in database, soft error page (no 404 status)
-        $self->htmlHeader(title => 'Server not found');
+        $self->htmlHeader(title => 'Server not found', meta_desc => $desc, meta_img => $img);
         $self->htmlFilterBox(
             sel => 's', 
             fq => '', 
@@ -66,11 +82,20 @@ sub show_server
                 
                 p;
                     txt "You tried to access ";
-                    span class => "hilit", $ip // "[no ip]";
+                    span class => "hilit";
+                        txt ($addr // "");
+                        if ($addr =~ m/[a-z]/ig )
+                        {
+                            txt " (";
+                            txt ($ip // "[no ip]");
+                            txt ")";
+                        }
+                    end;
                     txt " in ";
                     span class => "hilit", $gamename;
                     txt ".";
                 end;
+                
             end;
         end;
         $self->htmlFooter;
@@ -83,10 +108,50 @@ sub show_server
     # info exists. sanity checks
     $gamename = $info->{gamename} // $gamename;
     my $gamedescription = $self->dbGetGameDesc($info->{gamename}) // $info->{gamename};
+
+    my $mapfig = "/map/default/333networks.jpg";
+    my $mapfile = lc ($info->{mapname} // "");
+    
+    # some games may be merged gamename-wise
+    my $gamenamedir = ($gamename =~ m/mohaa/) ? "mohaa" : $gamename;
+    
+    # if map figure exists, use it
+    if (-e "$self->{root}/s/map/$gamenamedir/$mapfile.jpg") 
+    {
+        # map image
+        $mapfig = "/map/$gamenamedir/$mapfile.jpg";
+    }
+    # if not, game default image
+    elsif (-e "$self->{root}/s/map/default/$gamename.jpg") 
+    {
+        # game image
+        $mapfig = "/map/default/$gamename.jpg";
+    }
+    # otherwise 333networks default
+    else
+    {
+        # 333networks default
+        $mapfig = "/map/default/333networks.jpg";
+    }
+    
+    # map title/name (not lowercase)
+    my $mapname  = $info->{mapname} // $info->{maptitle} // "Untitled";
+    my $maptitle = ( $info->{maptitle} && lc $info->{maptitle} ne "untitled" ) 
+                 ? $info->{maptitle} : $mapname;
+
+                
+    my ($flag, $country) = $self->countryflag($info->{country} // "");
+
+    #meta description
+    my $desc  = "Address: ". ($info->{ip} // "0.0.0.0"). ":" . ($info->{hostport} // 0) . " ($country)
+    Players: ". ($info->{numplayers} // 0) ."/". ($info->{maxplayers} // 0) ."
+    GameType: " . ($info->{gametype} // "") . "
+    Map: $maptitle";
     
     #
     # generate info page
-    $self->htmlHeader(title => $info->{hostname} // "Server");
+    $self->htmlHeader(title => $info->{hostname} // "Server", meta_img => $mapfig, meta_desc => $desc);
+    
     $self->htmlFilterBox(
         gamename => $gamename,
         sel => 's', 
@@ -133,34 +198,6 @@ sub show_server
 
             # find the correct thumbnail, otherwise game default, otherwise 333 default
             div class => "thumbnail";
-                my $mapfig = "/map/default/333networks.jpg";
-                my $mapfile = lc ($info->{mapname} // "");
-                
-                # if map figure exists, use it
-                if (-e "$self->{root}/s/map/$gamename/$mapfile.jpg") 
-                {
-                    # map image
-                    $mapfig = "/map/$gamename/$mapfile.jpg";
-                }
-                # if not, game default image
-                elsif (-e "$self->{root}/s/map/default/$gamename.jpg") 
-                {
-                    # game image
-                    $mapfig = "/map/default/$gamename.jpg";
-                }
-                # otherwise 333networks default
-                else
-                {
-                    # 333networks default
-                    $mapfig = "/map/default/333networks.jpg";
-                }
-                
-                # map title/name (not lowercase)
-                my $mapname  = $info->{mapname} // $info->{maptitle} // "Untitled";
-                my $maptitle = ( $info->{maptitle} && lc $info->{maptitle} ne "untitled" ) 
-                             ? $info->{maptitle}
-                             : $mapname;
-                             
                 img src => $mapfig, 
                     alt => $mapfig, 
                     title => $mapname;
@@ -235,8 +272,6 @@ sub show_server
             # location data
             Tr;
                 td class => "wc1", "Location:";
-                
-                my ($flag, $country) = $self->countryflag($info->{country} // "");
                 td;
                     img class => "flag", src => "/flag/$flag.svg";
                     txt " ". $country;
@@ -381,6 +416,7 @@ sub show_server
                     end; 
                 end;
             }
+
         end; # playerinfo
         
         # disable stats that are considered irrelevant. can be re-enabled with "if (1)"
@@ -448,6 +484,8 @@ sub show_server
                           ($self->{site_url} . "/json/" . $gamename . "/" . ($info->{ip} // "0.0.0.0") . ":" . ($info->{hostport} // 0) );
             end;
             
+            if (0) # disable PNG banners because perfomance issues
+            {
             Tr; 
                 th;
                     txt "Server Banner:";
@@ -457,6 +495,7 @@ sub show_server
                 a href => ($self->{site_url} . "/png/" . $gamename . "/" . ( $info->{ip} // "0.0.0.0" ) . ":" . ($info->{hostport} // 0)),
                           ($self->{site_url} . "/png/" . $gamename . "/" . ( $info->{ip} // "0.0.0.0" ) . ":" . ($info->{hostport} // 0));
             end;
+            }
         end;
       
     end; # mainbox details

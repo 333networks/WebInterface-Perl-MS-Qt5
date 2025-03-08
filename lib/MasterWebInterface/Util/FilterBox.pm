@@ -22,7 +22,7 @@ sub htmlFilterBox
         end;
         
         # filter box
-        form action => $opt{gamename} ? "/s/$opt{gamename}" : "/s", 'accept-charset' => 'UTF-8', method => 'get';
+        form action => $opt{action}, 'accept-charset' => 'UTF-8', method => 'get';
             fieldset class => 'simple';
                 a href => '/g',    $opt{sel} eq 'g' ? (class => 'sel') : (), 'Games';
                 a href => '/s',    $opt{sel} eq 's' ? (class => 'sel') : (), 'Servers';

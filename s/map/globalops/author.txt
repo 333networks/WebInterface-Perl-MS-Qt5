@@ -1,0 +1,7 @@
+description Global Operations Mapshot Pack
+author Fallout , falloutdc@gmail.com
+comments All Stock maps , and a few Custom maps (Those that are actually played)
+filename r.qtmp
+version 1,0
+id go_1_0
+game globaloperations

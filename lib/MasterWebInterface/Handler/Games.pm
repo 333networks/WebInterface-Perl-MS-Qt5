@@ -7,7 +7,7 @@ use Exporter 'import';
 
 TUWF::register(
     qr{g}       => \&gamelist,
-    qr{g/all}   => \&gamelist,
+    qr{g/(all)} => \&gamelist,
 );
 
 #
@@ -37,7 +37,7 @@ sub gamelist
         all     => $all,
     );
 
-    $self->htmlHeader(title => "Browse Games");
+    $self->htmlHeader(title => "Browse Games", meta_desc => "Browse through all games that currently have servers online uplinking to the masterserver.");
     $self->htmlFilterBox(title => "Games", action => "/g/all", sel => 'g', fq => $f->{q});
     
     #
@@ -94,7 +94,10 @@ sub gamelist
                 }
                 else
                 {
-                    td $gn;
+                    td class => "tc2 icon", 
+                       style => "background-image: url(/icon32/333networks.png);", 
+                       title => $gn, 
+                       '';
                 }
                 
                 # number of beacons / servers

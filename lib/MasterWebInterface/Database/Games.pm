@@ -18,6 +18,12 @@ sub dbGameListGet
     # search criteria
     my %where = (
         $o{search} ? ('lower(label) LIKE lower(?)' => "%$o{search}%") : (),
+        $o{search} ? ('lower(label) LIKE lower(?) OR lower(gamename) LIKE lower(?)' => ["%$o{search}%","%$o{search}%"]) : (),
+        
+        
+        #$o{search}            ? ('LOWER(hostname) LIKE LOWER(?) OR LOWER(maptitle) LIKE LOWER(?) OR LOWER(mapname) LIKE LOWER(?)' => ["%$o{search}%", "%$o{search}%", "%$o{search}%"])     : (),
+        
+        
         !$o{all}   ? (             'num_total > ?' => 0)              : (),
     );
     
@@ -55,7 +61,7 @@ sub dbGameListGet
 sub dbGetGameDesc 
 {
     my ($self, $gn) = @_;
-    return $self->dbAll("SELECT label FROM gameinfo WHERE gamename = ?", $gn)->[0]{label};
+    return $self->dbAll("SELECT label FROM gameinfo WHERE gamename = ? LIMIT 1", $gn)->[0]{label};
 }
 
 1;

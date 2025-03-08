@@ -13,9 +13,11 @@ TUWF::register(
 #
 # Generate a list of selected games in the database per game (arg: gamename)
 #
-sub serverlist 
+sub serverlist
 {
     my($self, $adv, $gamename) = @_;
+    $adv      = "s"   unless $adv;
+    $gamename = "all" unless $gamename;
     
     # sorting, page
     my $f = $self->formValidate(
@@ -54,8 +56,14 @@ sub serverlist
         !($gamename eq "333networks" or $f->{gamename} eq "333networks") ? ( nolist => "333networks") : (), 
     );
     
+    # meta data
+    my $img = (-e "$self->{root}/s/map/default/$gamename.jpg") 
+        ? "/map/default/$gamename.jpg" : "/map/default/333networks.jpg";
+    my $label = $self->dbGetGameDesc($gamename) // "";
+    my $desc = "There are $p $label servers currently listed online.";
+    
     # Write page  
-    $self->htmlHeader(title => "Servers");
+    $self->htmlHeader(title => "$label Serverlist", meta_desc => $desc, meta_img => $img);
     
     # search box type: simple or advanced
     if ($adv eq 'adv')
@@ -118,10 +126,10 @@ sub serverlist
             
                 # country flag
                 # TODO: advanced filter by country only
-                my ($flag, $country) = $self->countryflag($l->{country});
+                my ($flag, $country) = $self->countryflag($l->{country} // "");
                 td class => "tc1", 
                    style => "background-image: url(/flag/$flag.svg);", 
-                   title => $country, 
+                   title => $country // "", 
                    '';
                 
                 # server name (and defaults)
@@ -145,14 +153,18 @@ sub serverlist
                 }
                 else
                 {
-                    td $gn;
+                    td class => "tc3 icon",
+                       style => "background-image: url(/icon32/333networks.png);", 
+                       title => $l->{label};
+                        a href => "/$adv/$gn", "";
+                    end;
                 }
                 
                 # game type (hover: raw, display: parsed)
                 # TODO: advanced filter by gametype only
                 td class => "tc4",
-                    title => $l->{gametype}, 
-                    $self->better_gametype($l->{gametype});
+                    title => $l->{gametype} // "", 
+                    $self->better_gametype($l->{gametype} // "");
                 
                 # number of players / maximum players
                 td class => "tc5"; 
@@ -162,7 +174,7 @@ sub serverlist
                 end;
                 
                 # map title/name
-                my $maplabel = ($l->{maptitle} && lc $l->{maptitle} ne "untitled" ? $l->{maptitle} : $l->{mapname});
+                my $maplabel = ($l->{maptitle} && lc $l->{maptitle} ne "untitled" ? $l->{maptitle} : $l->{mapname} // "");
                 td class => "tc6", title => $maplabel // "---", $maplabel // "---";
             end;
         },

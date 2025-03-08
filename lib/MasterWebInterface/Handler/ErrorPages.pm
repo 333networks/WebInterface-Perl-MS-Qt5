@@ -31,7 +31,7 @@ sub handle404
     }
     
     $self->resStatus(404);
-    $self->htmlHeader(title => '404 - Not Found');
+    $self->htmlHeader(title => '404 - Not Found', meta_desc => "The page at this link was not found. Try the homepage and find it from there?");
     $self->htmlFilterBox(title => "Servers", action => "/s", sel => 's', fq => '');
     
     div class => "mainbox warning";
@@ -71,7 +71,7 @@ sub handle500
     }
     
     $self->resStatus(500);
-    $self->htmlHeader(title => '500 - Internal Server Error');
+    $self->htmlHeader(title => '500 - Internal Server Error', meta_desc => "Catastrophic failure. Try again later or ping the website admin.");
     $self->htmlFilterBox(title => "Servers", action => "/s", sel => 's', fq => '');
     
     div class => "mainbox warning";
